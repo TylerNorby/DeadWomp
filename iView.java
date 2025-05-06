@@ -1,4 +1,3 @@
-public interface iView {
-    public void input();
+public interface iView extends iInput{
     public void displayBoard();
 }

@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class GraphicView implements iView{
     GameBoard gameBoard;
 
@@ -6,12 +8,26 @@ public class GraphicView implements iView{
         this.gameBoard = gameBoard;
     }
 
-    public void input()
-    {
-
-    }
     public void displayBoard()
     {
 
+    }
+
+    @Override
+    public int inputPlayerCount() {
+        // TODO 
+        throw new UnsupportedOperationException("Unimplemented method 'inputPlayerCount'");
+    }
+
+    @Override
+    public String[] inputNames(int playerCount) {
+        // TODO 
+        throw new UnsupportedOperationException("Unimplemented method 'inputNames'");
+    }
+
+    @Override
+    public Action inputAction(ArrayList<Action> validActions) {
+        // TODO 
+        throw new UnsupportedOperationException("Unimplemented method 'inputAction'");
     }
 }

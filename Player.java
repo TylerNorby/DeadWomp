@@ -1,6 +1,7 @@
 import java.util.Random;
 
 public class Player {
+    GameManager manager;
     String name;
     String location;
     String role;
@@ -9,9 +10,10 @@ public class Player {
     int credits;
     int practiceChips;
 
-    public Player(String name)
+    public Player(String name, GameManager manager)
     {
         this.name = name;
+        this.manager = manager;
     }
 
     /**
@@ -19,7 +21,18 @@ public class Player {
      */
     public void chooseAction()
     {
-
+        String action = "";
+        switch(action)
+        {
+            case "move":
+                break;
+            case "act":
+                break;
+            case "rehearse":
+                break;
+            case "upgrade":
+                break;
+        }
     }
     /**
      * Returns random number from 1-6.

@@ -1,7 +1,39 @@
-class GameManager
-{
-    public GameManager(int playerCount)
+class GameManager {
+    Player[] players;
+    int day;
+    int totalDays;
+    iView view;
+
+
+    public GameManager()
     {
+        view = new TextView(new GameBoard()); //only textview for now
+
+        int playerCount = view.inputPlayerCount();
+
+        players = new Player[playerCount];
+        String[] playerNames = view.inputNames(playerCount);
+
+        for (int i = 0; i < playerNames.length; ++i)
+        {
+            players[i] = new Player(playerNames[i], this);
+        }
+
+        switch(playerCount)
+        {
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 7:
+            case 8: 
+                break;
+        }
+
         //set up according to playerCount
     }
 
@@ -17,7 +49,7 @@ class GameManager
     }
 
     /**
-     * Returns true if player meets criteria for taking a role, i.e. in same location, sufficient rank, role not already taken.
+     * Validates whether player meets criteria for taking a role, i.e. in same location, sufficient rank, role not already taken.
      * @param role
      * @param location
      * @param onCard
@@ -74,5 +106,10 @@ class GameManager
      */
     public void calculateScore()
     {
+    }
+
+    public static void main(String args[])
+    {
+        GameManager manager = new GameManager();
     }
 }
