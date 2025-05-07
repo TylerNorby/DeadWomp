@@ -1,5 +1,5 @@
 public class Bank {
-    int rankCredits[];
+    private static final int rankCredits[];
     int rankMoney[];
 
     public Bank()

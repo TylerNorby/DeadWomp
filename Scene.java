@@ -5,6 +5,8 @@ public class Scene {
     int shots;
     Role[] roles;
 
+    // Class Completed
+
     public Scene(String name, String description, int shots, Role[] roles, int budget)
     {
         this.name = name;
@@ -38,5 +40,9 @@ public class Scene {
     public int getShots() 
     {
         return shots;
+    }
+
+    public Role getRoleses(int index){
+        return roles[index];
     }
 }

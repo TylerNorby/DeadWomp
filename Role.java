@@ -5,6 +5,8 @@ public class Role {
     Boolean inUse;
     Boolean onCard;
 
+    // Class Completed
+
     public Role(String name, String description, int rank, Boolean onCard)
     {
         this.name = name;
