@@ -1,10 +1,17 @@
+
+/**
+ * Handles the broad gameplay elements of the game of deadwood, inclding managing tunrs, players, and validating player actions
+ *
+ * @author Ashley Spassov, Tyler Norby
+ * @version 1.0
+ */
 class GameManager {
 
     Player[] players;
     int[] playerScores;
     int day;
     int totalDays;
-    GameBoard gameBoard; //Add this to the UML pls
+    GameBoard gameBoard;
     iView view;
 
     public GameManager() {
@@ -43,8 +50,7 @@ class GameManager {
 
     }
 
-        //set up according to playerCount
-
+    //set up according to playerCount
     /**
      * Returns whether start location is connected to destination using and
      * player does not have role
@@ -159,17 +165,14 @@ class GameManager {
     /**
      * Reset shot counters, move players to trailer, redistribute scene cards
      */
-    public void setupDay() 
-    {
+    public void setupDay() {
     }
 
     /**
-     * Main game loop 
+     * Main game loop
      */
-    public void playGame()
-    {
-        while (day < totalDays)
-        {
+    public void playGame() {
+        while (day < totalDays) {
             setupDay();
         }
     }
@@ -184,7 +187,6 @@ class GameManager {
             playerScores[i] = players[i].getMoney() + players[i].getCredits() + (players[i].getRank() * 5);
         }
     }
-
 
     public static void main(String args[]) {
         GameManager manager = new GameManager();
