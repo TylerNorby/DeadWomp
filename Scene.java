@@ -1,9 +1,14 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class Scene {
     String name;
     String description;
     int budget;
     int shots;
-    Role[] roles;
+
+    ArrayList<Role> roleList;
+    HashMap<String, Role> roleMap;
 
     // Class Completed
 
@@ -12,8 +17,12 @@ public class Scene {
         this.name = name;
         this.description = description;
         this.shots = shots;
-        this.roles = roles;
         this.budget = budget;
+
+        for (Role role: roles)
+        {
+            this.roleMap.put(role.getName(), role);
+        }
     }
 
     public int advanceScene()
@@ -42,7 +51,12 @@ public class Scene {
         return shots;
     }
 
-    public Role getRoleses(int index){
-        return roles[index];
+    public ArrayList<Role> getRoles()
+    {
+        return roleList;
+    }
+
+    public Role getRole(String role){
+        return roleMap.get(role);
     }
 }

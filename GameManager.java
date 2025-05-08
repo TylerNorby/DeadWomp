@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 class GameManager {
 
     Player[] players;
@@ -13,7 +15,6 @@ class GameManager {
         int playerCount = view.inputPlayerCount();
 
         players = new Player[playerCount];
-        playerScores = new int[playerCount];
         String[] playerNames = view.inputNames(playerCount);
 
         //set up according to amount of players (4 as default)
@@ -46,7 +47,7 @@ class GameManager {
         //set up according to playerCount
 
     /**
-     * Returns whether start location is connected to destination using and
+     * Returns whether start location is connected to destination and
      * player does not have role
      *
      * @param start
@@ -54,7 +55,7 @@ class GameManager {
      * @return
      */
     public boolean validateMove(Player player, String dest) {
-        return gameBoard.validateConnection(player.location, dest) && (player.role == null);
+        return gameBoard.validateConnection(player.location, dest);
 
     }
 
@@ -74,7 +75,6 @@ class GameManager {
             // ensures that desired roll is either on movieSet as extra, or on SceneCard. Also compares player rank w/ that roll.
             roleValidation = (movieSet.validateRole(role, player.getRank()));
         }
-
         return roleValidation;
 
     }
@@ -108,59 +108,46 @@ class GameManager {
      * @return
      */
     public boolean validateAct(Player player, int rollAmount) {
-        if (player.role != null) {
             // this will always be a movieSet if everything is implemented correctly
-            MovieSet loca = (MovieSet) gameBoard.getLocation(player.getLocation());
-            if (loca.actingSuccess(rollAmount)) {
+            MovieSet set = (MovieSet) gameBoard.getLocation(player.getLocation());
+            if (set.actingSuccess(rollAmount)) {
 
             }
-        }
         return false;
     }
 
     /**
-     * Validates whether player can rehearse
-     *
+     * Get list of possible actions given player can take
      * @param player
      * @return
      */
-    public boolean validateRehearse(Player player) {
-        if (player.getRole() == null || player.getRole().isEmpty()) {
-            return false;
+    private ArrayList<Action> getPossibleActions(Player player)
+    {
+        ArrayList<Action> possibleActions = new ArrayList<Action>();
+        if(player.role == null)
+        {
+            possibleActions.add(Action.Move);
         }
-        String playerLocationName = player.getLocation();
-        Location currentLocation = gameBoard.getLocation(playerLocationName);
-        if (currentLocation == null) {
-            return false;
+        else
+        {
+            possibleActions.add(Action.Act);
+            if (player.getChips() < 6)
+            {
+                possibleActions.add(Action.Rehearse);
+            }
+            if (player.getLocation() == "CastingOffice")
+            {
+                possibleActions.add(Action.Upgrade);
+            }
         }
-
-        if (!(currentLocation instanceof MovieSet)) {
-            return false;
-        }
-
-        MovieSet currentMovieSet = (MovieSet) currentLocation;
-
-        Scene currentScene = currentMovieSet.scene;
-
-        if (currentScene == null || currentScene.getShots() <= 0) {
-            return false;
-        }
-        int playerRank = player.getRank();
-        int rehearsalMarkers = player.practiceChips;
-        int sceneBudget = currentScene.getBudget();
-
-        if (playerRank + rehearsalMarkers >= sceneBudget) {
-            return false;
-        }
-
-        return true;
+        return possibleActions;
     }
-
     /**
      * Reset shot counters, move players to trailer, redistribute scene cards
      */
     public void setupDay() 
     {
+        //call method in GameBoard
     }
 
     /**
@@ -170,6 +157,30 @@ class GameManager {
     {
         while (day < totalDays)
         {
+            for(Player player : players)
+            {
+                ArrayList<Action> possibleActions = getPossibleActions(player); 
+                Action playerAction = view.inputAction(possibleActions);
+                //call view to display board with active player highlighted
+                switch(playerAction)
+                {
+                    case Move:
+                        //display valid move locations
+                        //get player input
+                        break;
+                    case Act:
+                        validateAct(player, player.rollDice());
+                        //display outcome, reward
+                        break;
+                    case Rehearse:
+                        //display outcome, reward
+                        break;
+                    case Upgrade:
+                        //display upgrade list, get input
+                        break;
+                }
+            }
+
             setupDay();
         }
     }
@@ -180,13 +191,16 @@ class GameManager {
      * @return
      */
     public void calculateScore() {
+        int[] playerScores = new int[players.length];
         for (int i = 0; i < players.length; i++) {
             playerScores[i] = players[i].getMoney() + players[i].getCredits() + (players[i].getRank() * 5);
         }
+        //pass playerscores off to view
     }
 
 
     public static void main(String args[]) {
         GameManager manager = new GameManager();
+        manager.playGame();
     }
 }

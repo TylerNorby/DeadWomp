@@ -1,11 +1,16 @@
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MovieSet extends Location {
 
     Scene scene;
-    Role[] extras;
+    ArrayList<Role> extras;
+    HashMap<String, Role> extraMap;
 
-    public MovieSet(String name, Scene scene, Role[] extras) {
+    public MovieSet(String name, Scene scene, ArrayList<Role> extras) {
         super(name);
+        this.extras = extras;
+        this.scene = scene;
     }
 
    
@@ -13,27 +18,30 @@ public class MovieSet extends Location {
         return playerRoll >= scene.budget;
     }
 
-    // Checks if input roll is extra or on SceneCard, also compares Rank. Crappy implementation this was done at midnight
-    public boolean validateRole(String role, int rank) {
-        Role extraRole = roleCheck(extras, rank, role);
-        if(extraRole != null){
-            return !extraRole.inUse;
+    /* 
+    Checks if input role is extra or on SceneCard, then compares rank.
+    **/
+    public boolean validateRole(String name, int rank) {
+        Role role = extraMap.get(name);
+        if (role == null)
+        {
+            role = scene.getRole(name);
+            return role != null && role.getRank() <= rank && !role.isTaken();
         }
-        Role sceneRole = roleCheck(scene.roles, rank, role);
-        if(sceneRole != null){
-            return !sceneRole.inUse;
+        else
+        {
+            return role.getRank() <= rank && !role.isTaken();
         }
-        return false;
+    }
+    
+    public boolean isExtra(String name)
+    {
+        Role role = extraMap.get(name); 
+        return role != null;
     }
 
-
-    // Remove inUse from here, add it to checks above
-    private Role roleCheck(Role[] roleList, int rank, String role) {
-        for (int i = 0; i < scene.roles.length; i++) {
-            if (roleList[i].getName().equals(role) && rank >= roleList[i].getRank()) {
-                return roleList[i];
-            }
-        }
-        return null;
+    public ArrayList<Role> getExtras()
+    {
+        return extras;
     }
 }
