@@ -1,12 +1,19 @@
 import java.util.ArrayList;
 
+
+/**
+ * Handles the broad gameplay elements of the game of deadwood, inclding managing tunrs, players, and validating player actions
+ *
+ * @author Ashley Spassov, Tyler Norby
+ * @version 1.0
+ */
 class GameManager {
 
     Player[] players;
     int[] playerScores;
     int day;
     int totalDays;
-    GameBoard gameBoard; //Add this to the UML pls
+    GameBoard gameBoard;
     iView view;
 
     public GameManager() {
@@ -44,8 +51,7 @@ class GameManager {
 
     }
 
-        //set up according to playerCount
-
+    //set up according to playerCount
     /**
      * Returns whether start location is connected to destination and
      * player does not have role
@@ -151,7 +157,7 @@ class GameManager {
     }
 
     /**
-     * Main game loop 
+     * Main game loop
      */
     public void playGame()
     {
@@ -197,7 +203,6 @@ class GameManager {
         }
         //pass playerscores off to view
     }
-
 
     public static void main(String args[]) {
         GameManager manager = new GameManager();

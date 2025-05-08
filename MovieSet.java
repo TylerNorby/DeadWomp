@@ -1,6 +1,12 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * MovieSet object is a type of location that contains scenes and various other data points
+ *
+ * @author Ashley Spassov, Tyler Norby
+ * @version 1.0
+ */
 public class MovieSet extends Location {
 
     Scene scene;
@@ -13,8 +19,13 @@ public class MovieSet extends Location {
         this.scene = scene;
     }
 
-   
-    public boolean actingSuccess(int playerRoll){
+    /**
+     * Determines if a players acting roll was successful
+     *
+     * @param playerRoll
+     * @return boolean telling if player met the threshhold to successfully act
+     */
+    public boolean actingSuccess(int playerRoll) {
         return playerRoll >= scene.budget;
     }
 
