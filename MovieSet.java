@@ -55,4 +55,9 @@ public class MovieSet extends Location {
     {
         return extras;
     }
+
+    public Scene getScene()
+    {
+        return scene;
+    }
 }

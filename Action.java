@@ -3,5 +3,6 @@ public enum Action
     Move,
     Act,
     Rehearse,
-    Upgrade
+    Upgrade,
+    TakeRole
 }

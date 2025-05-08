@@ -6,6 +6,7 @@ public class Scene {
     String description;
     int budget;
     int shots;
+    int totalShots;
 
     ArrayList<Role> roleList;
     HashMap<String, Role> roleMap;
@@ -16,7 +17,8 @@ public class Scene {
     {
         this.name = name;
         this.description = description;
-        this.shots = shots;
+        this.totalShots = shots;
+        this.shots = this.totalShots;
         this.budget = budget;
 
         for (Role role: roles)
@@ -49,6 +51,11 @@ public class Scene {
     public int getShots() 
     {
         return shots;
+    }
+
+    public int getTotalShots()
+    {
+        return totalShots;
     }
 
     public ArrayList<Role> getRoles()

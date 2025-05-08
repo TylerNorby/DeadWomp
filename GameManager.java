@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 
 /**
- * Handles the broad gameplay elements of the game of deadwood, inclding managing tunrs, players, and validating player actions
+ * Handles the broad gameplay elements of the game of Deadwood, including managing turns, players, and validating player actions.
  *
  * @author Ashley Spassov, Tyler Norby
  * @version 1.0
@@ -17,7 +17,8 @@ class GameManager {
     iView view;
 
     public GameManager() {
-        view = new TextView(new GameBoard()); //only textview for now
+        gameBoard = new GameBoard();
+        view = new TextView(gameBoard); //only textview for now
 
         int playerCount = view.inputPlayerCount();
 
@@ -51,19 +52,6 @@ class GameManager {
 
     }
 
-    //set up according to playerCount
-    /**
-     * Returns whether start location is connected to destination and
-     * player does not have role
-     *
-     * @param start
-     * @param dest
-     * @return
-     */
-    public boolean validateMove(Player player, String dest) {
-        return gameBoard.validateConnection(player.location, dest);
-    }
-
     /**
      * * Returns true if player meets criteria for taking a role, i.e. in same*
      * location, sufficient rank, role not already taken.** @param role* @param
@@ -71,12 +59,12 @@ class GameManager {
      */
     public boolean validateTakeRole(String role, Player player) {
 
-        Location loca = gameBoard.getLocation(player.getLocation());
+        Location location = gameBoard.getLocation(player.getLocation());
         boolean roleValidation = false;
 
         // If player location is not on a movieSet, will skip over and return false
-        if (loca instanceof MovieSet) {
-            MovieSet movieSet = (MovieSet) loca;
+        if (location instanceof MovieSet) {
+            MovieSet movieSet = (MovieSet) location;
             // ensures that desired roll is either on movieSet as extra, or on SceneCard. Also compares player rank w/ that roll.
             roleValidation = (movieSet.validateRole(role, player.getRank()));
         }
@@ -93,16 +81,19 @@ class GameManager {
      * @return
      */
     public boolean validateUpgrade(Player player, int desiredRank, boolean useCredits) {
-        Location loca = gameBoard.getLocation(player.getLocation());
-        // If player location is not on a casting office, skips over and returns false
-        if (loca instanceof CastingOffice) {
+        Location location = gameBoard.getLocation(player.getLocation());
+
+        if (location instanceof CastingOffice) {
             if (useCredits) {
                 return (player.getCredits() >= CastingOffice.getCreditCost(desiredRank) && CastingOffice.getCreditCost(desiredRank) != -1);
             } else {
                 return (player.getCredits() >= CastingOffice.getMoneyCost(desiredRank) && CastingOffice.getMoneyCost(desiredRank) != -1);
             }
         }
-        return false;
+        else
+        {
+            return false;
+        }
     }
 
     /**
@@ -115,10 +106,34 @@ class GameManager {
     public boolean validateAct(Player player, int rollAmount) {
             // this will always be a movieSet if everything is implemented correctly
             MovieSet set = (MovieSet) gameBoard.getLocation(player.getLocation());
+
             if (set.actingSuccess(rollAmount)) {
 
             }
         return false;
+    }
+
+    /**
+     * Handles move option 
+     * @param player
+     * @param start
+     * @param dest
+     */
+    private void Move(Player player)
+    {
+        Location[] locations = gameBoard.getLocation(player.getLocation()).getConnections();
+        String[] validLocations = new String[locations.length];
+
+        for (int i = 0; i < locations.length; ++i)
+        {
+            validLocations[i] = locations[i].getName();
+        }
+
+        String destination = view.inputLocation(validLocations);
+        if (destination != null)
+        {
+            player.setLocation(destination);
+        }
     }
 
     /**
@@ -132,6 +147,10 @@ class GameManager {
         if(player.role == null)
         {
             possibleActions.add(Action.Move);
+            if(gameBoard.getLocation(player.getLocation()) instanceof MovieSet)
+            {
+                possibleActions.add(Action.TakeRole);
+            }
         }
         else
         {
@@ -170,8 +189,10 @@ class GameManager {
                 switch(playerAction)
                 {
                     case Move:
-                        //display valid move locations
-                        //get player input
+                        Move(player);
+                        possibleActions = getPossibleActions(player);
+                        possibleActions.remove(Action.Move);
+
                         break;
                     case Act:
                         validateAct(player, player.rollDice());
@@ -182,6 +203,9 @@ class GameManager {
                         break;
                     case Upgrade:
                         //display upgrade list, get input
+                        break;
+                    case TakeRole:
+                        //display available roles (if any), get input
                         break;
                 }
             }

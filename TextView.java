@@ -72,7 +72,38 @@ public class TextView implements iView{
     /**
      * Display each location, show players in locations, highlight active player
      */
-    public void displayBoard(GameBoard gameBoard)
+    public void displayBoard(GameBoard gameBoard, Player activePlayer, Player[] players)
     {
+    }
+
+    /**
+     * Display valid locations, validate & return input
+     * @param validLocations
+     * @return
+     */
+    public String inputLocation(String[] validLocations)
+    {
+        System.out.println("Available locations: ");
+        for (String location : validLocations)
+        {
+            System.out.println(location);
+        }
+        String input = System.console().readLine(); 
+
+        int i = 0;
+        while (i < validLocations.length && validLocations[i] != input)
+        {
+            ++i;
+        }
+
+        if (validLocations[i] == input)
+        {
+            return input;
+        }
+        else
+        {
+            System.out.println("Not valid location, please try again.");
+            return inputLocation(validLocations);
+        }
     }
 }

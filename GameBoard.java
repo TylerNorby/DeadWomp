@@ -5,17 +5,15 @@
  * @author Ashley Spassov, Tyler Norby
  * @version 1.0
  */
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GameBoard {
 
     private HashMap<String, Location> locationMap;
-    private ArrayList<Location> locationList;
+    private Location[] locations;
 
     // Whenever we add castingOffice to this location array we need to make sure its of Casting office type
     public GameBoard() {
-        locationList = new ArrayList<Location>();
         locationMap = new HashMap<String, Location>();
 
         //populate list & map using ParseDoc class        
@@ -30,6 +28,11 @@ public class GameBoard {
      */
     public Location getLocation(String location) {
         return locationMap.get(location);
+    }
+
+    public Location[] getLocations()
+    {
+        return locations;
     }
 
     /**

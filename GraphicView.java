@@ -32,7 +32,7 @@ public class GraphicView implements iView{
     }
 
     @Override
-    public void displayBoard(GameBoard gameBoard) {
+    public void displayBoard(GameBoard gameBoard, Player activePlayer, Player[] players) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'displayBoard'");
     }
