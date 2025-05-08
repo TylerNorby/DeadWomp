@@ -11,8 +11,8 @@ public class CastingOffice extends Location {
     private static final int[] RANK_COSTS_MONEY = {0, 4, 10, 18, 28, 40};
     private static final int[] RANK_COSTS_CREDITS = {0, 5, 10, 15, 20, 25};
 
-    public CastingOffice(String name) {
-        super(name);
+    public CastingOffice(String name, Location[] connections) {
+        super(name, connections);
     }
 
     /**

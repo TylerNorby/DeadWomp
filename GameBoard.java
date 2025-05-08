@@ -5,15 +5,20 @@
  * @author Ashley Spassov, Tyler Norby
  * @version 1.0
  */
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GameBoard {
 
-    private HashMap<String, Location> locations;
+    private HashMap<String, Location> locationMap;
+    private ArrayList<Location> locationList;
 
     // Whenever we add castingOffice to this location array we need to make sure its of Casting office type
     public GameBoard() {
-        locations = new HashMap<String, Location>();
+        locationList = new ArrayList<Location>();
+        locationMap = new HashMap<String, Location>();
+
+        //populate list & map using ParseDoc class        
     }
 
     /**
@@ -21,11 +26,10 @@ public class GameBoard {
      * the hashmap
      *
      * @param location
-     * @return returns a the location object alligned with the name of the
-     * location
+     * @return returns location object with given name
      */
     public Location getLocation(String location) {
-        return null;
+        return locationMap.get(location);
     }
 
     /**
@@ -36,7 +40,7 @@ public class GameBoard {
      * @return boolean value depending on if the two locations are next to each other
      */
     public boolean validateConnection(String start, String dest) {
-        return true;
+        return locationMap.get(start).isConnected(dest);
     }
 
     /**

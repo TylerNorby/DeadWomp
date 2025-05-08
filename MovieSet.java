@@ -13,8 +13,8 @@ public class MovieSet extends Location {
     ArrayList<Role> extras;
     HashMap<String, Role> extraMap;
 
-    public MovieSet(String name, Scene scene, ArrayList<Role> extras) {
-        super(name);
+    public MovieSet(String name, Location[] connections, Scene scene, ArrayList<Role> extras) {
+        super(name, connections);
         this.extras = extras;
         this.scene = scene;
     }

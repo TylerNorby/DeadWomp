@@ -62,7 +62,6 @@ class GameManager {
      */
     public boolean validateMove(Player player, String dest) {
         return gameBoard.validateConnection(player.location, dest);
-
     }
 
     /**
