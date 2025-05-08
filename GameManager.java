@@ -1,4 +1,3 @@
-
 class GameManager {
 
     Player[] players;
@@ -125,7 +124,7 @@ class GameManager {
     /**
      * Reset shot counters, move players to trailer, redistribute scene cards
      */
-    public void dayWrap() {
+    public void setupDay() {
     }
 
     /**

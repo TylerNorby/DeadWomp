@@ -23,6 +23,7 @@ public class TextView implements iView{
             System.out.println("Input not number, please try again. ");
             playerCount = inputPlayerCount();
         }
+
         if (playerCount >= 3 && playerCount <= 8)
         {
             return playerCount;
@@ -68,10 +69,10 @@ public class TextView implements iView{
         }
     }
 
-    public void displayBoard()
+    /**
+     * Display each location, show players in locations, highlight active player
+     */
+    public void displayBoard(GameBoard gameBoard)
     {
-
     }
-
-
 }

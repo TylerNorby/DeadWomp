@@ -1,3 +1,3 @@
 public interface iView extends iInput{
-    public void displayBoard();
+    public void displayBoard(GameBoard gameBoard);
 }

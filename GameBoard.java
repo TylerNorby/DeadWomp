@@ -1,13 +1,13 @@
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GameBoard {
 
-    private ArrayList<Location> locations;
+    private HashMap<String, Location> locations;
 
     // Whenever we add castingOffice to this location array we need to make sure its of Casting office type
     public GameBoard() {
-        locations = new ArrayList<Location>();
+        locations = new HashMap<String, Location>();
     }
 
     public Location getLocation(String location) {
