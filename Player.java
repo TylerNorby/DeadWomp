@@ -80,4 +80,8 @@ public class Player {
         return location;
     }
 
+    public String getRole(){
+        return role;
+    }
+
 }

@@ -11,7 +11,6 @@ public class MovieSet extends Location {
    
     public boolean actingSuccess(int playerRoll){
         return playerRoll >= scene.budget;
-        
     }
 
     // Checks if input roll is extra or on SceneCard, also compares Rank. Crappy implementation this was done at midnight
