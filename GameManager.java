@@ -102,14 +102,14 @@ class GameManager {
      * @return
      */
     public boolean validateAct(Player player, int rollAmount) {
-        if (player.role != null){
+        if (player.role != null) {
             // this will always be a movieSet if everything is implemented correctly
-            MovieSet loca = (MovieSet)gameBoard.getLocation(player.getLocation());
-            if (loca.actingSuccess(rollAmount)){
-                
+            MovieSet loca = (MovieSet) gameBoard.getLocation(player.getLocation());
+            if (loca.actingSuccess(rollAmount)) {
+
             }
         }
-        return false; 
+        return false;
     }
 
     /**
@@ -118,7 +118,35 @@ class GameManager {
      * @param player
      * @return
      */
-    public boolean validateRehearse() {
+    public boolean validateRehearse(Player player) {
+        if (player.getRole() == null || player.getRole().isEmpty()) {
+            return false;
+        }
+        String playerLocationName = player.getLocation();
+        Location currentLocation = gameBoard.getLocation(playerLocationName);
+        if (currentLocation == null) {
+            return false;
+        }
+
+        if (!(currentLocation instanceof MovieSet)) {
+            return false;
+        }
+
+        MovieSet currentMovieSet = (MovieSet) currentLocation;
+
+        Scene currentScene = currentMovieSet.scene;
+
+        if (currentScene == null || currentScene.getShots() <= 0) {
+            return false;
+        }
+        int playerRank = player.getRank();
+        int rehearsalMarkers = player.practiceChips;
+        int sceneBudget = currentScene.getBudget();
+
+        if (playerRank + rehearsalMarkers >= sceneBudget) {
+            return false;
+        }
+
         return true;
     }
 
@@ -135,7 +163,7 @@ class GameManager {
      */
     public void calculateScore() {
         for (int i = 0; i < players.length; i++) {
-            playerScores[i] = players[i].getMoney() + players[i].getCredits();
+            playerScores[i] = players[i].getMoney() + players[i].getCredits() + (players[i].getRank() * 5);
         }
     }
 
