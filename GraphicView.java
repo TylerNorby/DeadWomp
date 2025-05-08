@@ -30,4 +30,10 @@ public class GraphicView implements iView{
         // TODO 
         throw new UnsupportedOperationException("Unimplemented method 'inputAction'");
     }
+
+    @Override
+    public void displayBoard(GameBoard gameBoard) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'displayBoard'");
+    }
 }

@@ -16,27 +16,34 @@ class GameManager {
         playerScores = new int[playerCount];
         String[] playerNames = view.inputNames(playerCount);
 
-        for (int i = 0; i < playerNames.length; ++i) {
-            players[i] = new Player(playerNames[i], this);
-        }
+        //set up according to amount of players (4 as default)
+        int startRank = 1;
+        int startCredits = 0;
 
         switch (playerCount) {
+            case 2:
             case 3:
-                break;
-            case 4:
+                totalDays = 3;
                 break;
             case 5:
+                startCredits = 2;
                 break;
             case 6:
+                startCredits = 2;
                 break;
             case 7:
-
             case 8:
+                startRank = 2;
                 break;
         }
 
-        //set up according to playerCount
+        for (int i = 0; i < playerNames.length; ++i) {
+            players[i] = new Player(playerNames[i], startRank, startCredits);
+        }
+
     }
+
+        //set up according to playerCount
 
     /**
      * Returns whether start location is connected to destination using and
@@ -152,7 +159,19 @@ class GameManager {
     /**
      * Reset shot counters, move players to trailer, redistribute scene cards
      */
-    public void setupDay() {
+    public void setupDay() 
+    {
+    }
+
+    /**
+     * Main game loop 
+     */
+    public void playGame()
+    {
+        while (day < totalDays)
+        {
+            setupDay();
+        }
     }
 
     /**
@@ -165,6 +184,7 @@ class GameManager {
             playerScores[i] = players[i].getMoney() + players[i].getCredits() + (players[i].getRank() * 5);
         }
     }
+
 
     public static void main(String args[]) {
         GameManager manager = new GameManager();

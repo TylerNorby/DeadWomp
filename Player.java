@@ -2,8 +2,6 @@
 import java.util.Random;
 
 public class Player {
-
-    GameManager manager;
     String name;
     String location;
     String role;
@@ -12,14 +10,12 @@ public class Player {
     int credits;
     int practiceChips;
 
-    public Player(String name, GameManager manager) {
+    public Player(String name, int rank, int credits) {
         this.name = name;
-        this.manager = manager;
 
-        rank = 1;
-        money = 0;
-        credits = 0;
-
+        this.rank = rank;
+        this.money = 0;
+        this.credits = credits;
     }
 
     /**

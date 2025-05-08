@@ -10,7 +10,7 @@ public class TextView implements iView{
 
     public int inputPlayerCount()
     {
-        System.out.print("\nEnter number of players (3-8): ");
+        System.out.print("\nEnter number of players (2-8): ");
         String input = System.console().readLine();
         int playerCount;
 
@@ -24,7 +24,7 @@ public class TextView implements iView{
             playerCount = inputPlayerCount();
         }
 
-        if (playerCount >= 3 && playerCount <= 8)
+        if (playerCount >= 2 && playerCount <= 8)
         {
             return playerCount;
         }
