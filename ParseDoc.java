@@ -1,23 +1,42 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class ParseDoc {
     private Document document;
-    private HashMap<String, Location> locations;
 
     public ParseDoc(Document document)
     {
         this.document = document;
-        
     }
 
-    public HashMap<String, Location> parseLocations()
+    public Location[] parseLocations()
     {
-        HashMap<String, Location> locations = new HashMap<String, Location>();
+        NodeList nodes = document.getDocumentElement().getChildNodes();
+        Location[] locations = new Location[nodes.getLength()];
+
+        for (int i = 0; i < nodes.getLength(); ++i)
+        {
+            switch (nodes.item(i).getNodeName())
+            {
+                case "set":
+                    break;
+                case "trailer":
+                    break;
+                case "office":
+                    break;
+            }
+        }
+
 
         return locations;
     }
-    
+
+    public Scene[] parseScenes()
+    {
+        NodeList nodes = document.getDocumentElement().getChildNodes();
+        Scene[] scenes = new Scene[nodes.getLength()];
+
+        return scenes;
+    }
 }

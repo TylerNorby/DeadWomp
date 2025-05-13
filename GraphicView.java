@@ -36,4 +36,10 @@ public class GraphicView implements iView{
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'displayBoard'");
     }
+
+    @Override
+    public String inputLocation(String[] validLocations) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'inputLocation'");
+    }
 }
