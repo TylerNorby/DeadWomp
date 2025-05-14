@@ -19,29 +19,11 @@ public class GameBoard {
 
     // Whenever we add castingOffice to this location array we need to make sure its of Casting office type
     public GameBoard() {
-        Document board;
-        Document cards; 
-
         locationMap = new HashMap<String, Location>();
+        ParseXML parser = new ParseXML("board.xml", "cards.xml");
 
-        ParseXML parser = new ParseXML();
-        try{
-            board = parser.getDocFromFile("board.xml");
-            cards = parser.getDocFromFile("cards.xml");
-
-            ParseDoc parseBoard = new ParseDoc(board);
-            ParseDoc parseCards = new ParseDoc(cards);
-
-            locations = parseBoard.parseLocations();
-            
-        }
-        catch(ParserConfigurationException e)
-        {
-            System.out.println("CRASH: Parser configuration exception. ");
-        }
-
-
-        //populate list & map using ParseDoc class        
+        locations = parser.parseBoard();
+        scenes = parser.parseScenes();
     }
 
     /**
