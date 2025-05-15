@@ -9,15 +9,17 @@ import java.util.HashMap;
  */
 public class MovieSet extends Location {
 
-    Role[] extras;
-    HashMap<String, Role> extraMap;
-    Scene[] scenes = new Scene[4];
-    int sceneNum = 0;
+    Part[] extras;
+    HashMap<String, Part> extraMap;
+    Card[] cards;
+    int shots;
+    int cardNum;
 
-    public MovieSet(String name, String[] connections, Role[] extras) {
+    public MovieSet(String name, String[] connections, int shots, Part[] extras) {
         super(name, connections);
+        this.shots = shots;
         this.extras = extras;
-        this.scenes = new Scene[3];
+        this.cards = cards;
     }
 
     /**
@@ -27,17 +29,17 @@ public class MovieSet extends Location {
      * @return boolean telling if player met the threshhold to successfully act
      */
     public boolean actingSuccess(int playerRoll) {
-        return playerRoll >= scenes[sceneNum].budget;
+        return playerRoll >= cards[cardNum].budget;
     }
 
     /* 
     Checks if input role is extra or on SceneCard, then compares rank.
     **/
     public boolean validateRole(String name, int rank) {
-        Role role = extraMap.get(name);
+        Part role = extraMap.get(name);
         if (role == null)
         {
-            role = scenes[sceneNum].getRole(name);
+            role = cards[cardNum].getRole(name);
             return role != null && role.getRank() <= rank && role.getPlayerID() == -1;
         }
         else
@@ -48,17 +50,17 @@ public class MovieSet extends Location {
     
     public boolean isExtra(String name)
     {
-        Role role = extraMap.get(name); 
+        Part role = extraMap.get(name); 
         return role != null;
     }
 
-    public Role[] getExtras()
+    public Part[] getExtras()
     {
         return extras;
     }
 
-    public Scene getScene()
+    public Card getCard()
     {
-        return scenes[sceneNum];
+        return cards[cardNum];
     }
 }

@@ -1,13 +1,18 @@
-public class Role {
+public class Part {
     String name;
     String description;
     int rank;
     int playerID;
     Boolean onCard;
 
-    // Class Completed
-
-    public Role(String name, String description, int rank, Boolean onCard)
+    /**
+     * Object representing a part on the board 
+     * @param name
+     * @param description
+     * @param rank
+     * @param onCard
+     */
+    public Part(String name, String description, int rank, Boolean onCard)
     {
         this.name = name;
         this.description = description;

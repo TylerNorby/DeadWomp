@@ -15,7 +15,7 @@ public class GameBoard {
 
     private HashMap<String, Location> locationMap;
     private Location[] locations;
-    private Scene[] scenes;
+    private Card[] cards;
 
     // Whenever we add castingOffice to this location array we need to make sure its of Casting office type
     public GameBoard() {
@@ -23,7 +23,7 @@ public class GameBoard {
         ParseXML parser = new ParseXML("board.xml", "cards.xml");
 
         locations = parser.parseBoard();
-        scenes = parser.parseScenes();
+        cards = parser.parseCards();
     }
 
     /**
@@ -59,7 +59,7 @@ public class GameBoard {
      * @param location
      * @param scene
      */
-    public void setScene(String location, Scene scene) {
+    public void setScene(String location, Card card) {
 
     }
 
