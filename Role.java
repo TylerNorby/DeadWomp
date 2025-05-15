@@ -2,7 +2,7 @@ public class Role {
     String name;
     String description;
     int rank;
-    Boolean inUse;
+    int playerID;
     Boolean onCard;
 
     // Class Completed
@@ -13,7 +13,8 @@ public class Role {
         this.description = description;
         this.rank = rank;
         this.onCard = onCard;
-    }
+        playerID = -1; //index into player array, -1 is empty
+}
 
     String getName()
     {
@@ -27,9 +28,9 @@ public class Role {
     {
         return rank;
     }
-    Boolean isTaken()
+    int getPlayerID()
     {
-        return inUse;
+        return playerID;
     }
     Boolean onCard()
     {

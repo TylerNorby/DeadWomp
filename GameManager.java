@@ -60,14 +60,7 @@ class GameManager {
      */
     private void Move(Player player)
     {
-        Location[] locations = gameBoard.getLocation(player.getLocation()).getConnections();
-        String[] validLocations = new String[locations.length];
-
-        for (int i = 0; i < locations.length; ++i)
-        {
-            validLocations[i] = locations[i].getName();
-        }
-
+        String[] validLocations = gameBoard.getLocation(player.getLocation()).getConnections();
         String destination = view.inputLocation(validLocations);
         if (destination != null)
         {

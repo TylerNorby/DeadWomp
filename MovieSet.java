@@ -9,14 +9,15 @@ import java.util.HashMap;
  */
 public class MovieSet extends Location {
 
-    Scene scene;
-    ArrayList<Role> extras;
+    Role[] extras;
     HashMap<String, Role> extraMap;
+    Scene[] scenes = new Scene[4];
+    int sceneNum = 0;
 
-    public MovieSet(String name, Location[] connections, Scene scene, ArrayList<Role> extras) {
+    public MovieSet(String name, String[] connections, Role[] extras) {
         super(name, connections);
         this.extras = extras;
-        this.scene = scene;
+        this.scenes = new Scene[3];
     }
 
     /**
@@ -26,7 +27,7 @@ public class MovieSet extends Location {
      * @return boolean telling if player met the threshhold to successfully act
      */
     public boolean actingSuccess(int playerRoll) {
-        return playerRoll >= scene.budget;
+        return playerRoll >= scenes[sceneNum].budget;
     }
 
     /* 
@@ -36,12 +37,12 @@ public class MovieSet extends Location {
         Role role = extraMap.get(name);
         if (role == null)
         {
-            role = scene.getRole(name);
-            return role != null && role.getRank() <= rank && !role.isTaken();
+            role = scenes[sceneNum].getRole(name);
+            return role != null && role.getRank() <= rank && role.getPlayerID() == -1;
         }
         else
         {
-            return role.getRank() <= rank && !role.isTaken();
+            return role.getRank() <= rank && role.getPlayerID() == -1;
         }
     }
     
@@ -51,13 +52,13 @@ public class MovieSet extends Location {
         return role != null;
     }
 
-    public ArrayList<Role> getExtras()
+    public Role[] getExtras()
     {
         return extras;
     }
 
     public Scene getScene()
     {
-        return scene;
+        return scenes[sceneNum];
     }
 }

@@ -1,23 +1,24 @@
 public class Location {
     String name;
-    Location[] connections;
+    String[] connections;
 
-    public Location(String name, Location[] locations)
+    public Location(String name, String[] connections)
     {
         this.name = name;
+        this.connections = connections;
     }
-    public Location[] getConnections()
+    public String[] getConnections()
     {
         return connections;
     }
     public boolean isConnected(String location)
     {
         int i = 0;
-        while (i < connections.length && connections[i].getName() != location)
+        while (i < connections.length && connections[i] != location)
         {
             ++i;
         }
-        return connections[i].getName() == location;
+        return connections[i] == location;
     }
     public String getName()
     {
