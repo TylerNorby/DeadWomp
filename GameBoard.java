@@ -21,9 +21,14 @@ public class GameBoard {
     public GameBoard() {
         locationMap = new HashMap<String, Location>();
         ParseXML parser = new ParseXML("board.xml", "cards.xml");
-
         locations = parser.parseBoard();
         cards = parser.parseCards();
+        
+        //add locations in array to hashmap for faster access
+        for (int i = 0; i < locations.length; ++i)
+        {
+            locationMap.put(locations[i].getName(), locations[i]);
+        }
     }
 
     /**

@@ -1,5 +1,4 @@
 import javax.xml.parsers.*;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -34,23 +33,30 @@ public class ParseXML {
     public Location[] parseBoard()
     {
         NodeList nodes = board.getDocumentElement().getChildNodes();
-        Location[] locations = new Location[nodes.getLength()];
+        Location[] locations = new Location[nodes.getLength()/2];
 
-        for (int i = 0; i < nodes.getLength(); ++i)
+        int j = 0;
+        for (int i = 1; i < nodes.getLength() - 1; i+=2)
         {
             switch (nodes.item(i).getNodeName())
             {
                 case "set":
                     MovieSet set = getMovieSet((Element) nodes.item(i));
+                    locations[j] = set;
                     break;
                 case "trailer":
                     Location location = getLocation((Element) nodes.item(i));
+                    locations[j] = location;
                     break;
                 case "office":
                     Location office = getLocation((Element) nodes.item(i));
+                    locations[j] = office;
                     //parse payment info for bank 
                     break;
             }
+            System.out.println(locations.length + "/" + j);
+            System.out.println(locations[j]);
+            ++j;
         }
         return locations;
     }
@@ -159,10 +165,5 @@ public class ParseXML {
             parts[i] = new Part(partName, line, rank, true);
         }
         return new Card(name, sceneNum, budget, desc, parts);
-    }
-
-    public static void main(String[] args)
-    {
-
     }
 }

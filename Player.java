@@ -12,10 +12,10 @@ public class Player {
 
     public Player(String name, int rank, int credits) {
         this.name = name;
-
         this.rank = rank;
         this.money = 0;
         this.credits = credits;
+        this.location = "trailers";
     }
 
     public int rollDice()

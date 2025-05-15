@@ -10,8 +10,6 @@ public class Card{
     ArrayList<Part> roleList;
     HashMap<String, Part> roleMap;
 
-    // Class Completed
-
     public Card(String name, int sceneNum, int budget, String description, Part[] roles)
     {
         this.name = name;
