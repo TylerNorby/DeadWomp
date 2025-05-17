@@ -28,6 +28,8 @@ class GameManager {
         //set up according to amount of players (4 as default)
         int startRank = 1;
         int startCredits = 0;
+        day = 0;
+        totalDays = 4;
 
         switch (playerCount) {
             case 2:
