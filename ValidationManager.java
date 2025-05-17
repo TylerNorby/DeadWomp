@@ -92,7 +92,7 @@ class ValidationManager
             {
                 possibleActions.add(Action.Rehearse);
             }
-            if (player.getLocation() == "CastingOffice")
+            if (player.getLocation() == "office")
             {
                 possibleActions.add(Action.Upgrade);
             }

@@ -121,6 +121,8 @@ class GameManager {
             case TakeRole:
                 //display available roles (if any), get input
                 break;
+            case Nothing:
+                break;
         }
     }
 

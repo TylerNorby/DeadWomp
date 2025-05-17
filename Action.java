@@ -4,5 +4,6 @@ public enum Action
     Act,
     Rehearse,
     Upgrade,
-    TakeRole
+    TakeRole,
+    Nothing
 }

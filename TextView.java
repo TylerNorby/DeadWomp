@@ -44,14 +44,33 @@ public class TextView implements iView {
     public Action inputAction(ArrayList<Action> validActions) {
         System.out.println("\nAvailable actions: ");
 
-        for (Action a : validActions) {
-            System.out.println(a);
+        for (int i = 0; i < validActions.size(); ++i) {
+            Action action = validActions.get(i);
+            if (action == Action.TakeRole)
+            {
+                System.out.println((i + 1) + ": Take Role"); 
+            }
+            else
+            {
+                System.out.println((i + 1) + ": " + validActions.get(i));
+            }
         }
-        System.out.print("Please enter an action: ");
+        System.out.print("\nPlease select an action (enter to skip): ");
 
+        String input = System.console().readLine();
         try {
-            return Action.valueOf(System.console().readLine());
-        } catch (IllegalArgumentException e) {
+            int actionID = Integer.valueOf(input) - 1;
+            if (actionID < 0 || actionID >= validActions.size())
+            {
+                System.out.println("\nInvalid action, please try again.\n");
+                return inputAction(validActions);
+            }
+            return validActions.get(actionID);
+        } catch (NumberFormatException e) {
+            if (input.trim().equals(""))
+            {
+                return Action.Nothing;
+            }
             System.out.print("\nInvalid action, please try again.\n");
             return inputAction(validActions);
         }
@@ -72,8 +91,17 @@ public class TextView implements iView {
 
         for (Location location : locations)
         {
-            System.out.println(location.getName() + ":");
-            for (int i = 0; i < playerLocations.length; ++i)
+            System.out.print(location.getName() + ":     ->     ");
+            String[] neighbors = location.getConnections();
+
+            int i;
+            for (i = 0; i < neighbors.length - 1; ++i)
+            {
+                System.out.print(neighbors[i] + ", ");
+            }
+            System.out.print(neighbors[i] + "\n");
+
+            for (i = 0; i < playerLocations.length; ++i)
             {
                 if (playerLocations[i].equals(location.getName()))
                 {
