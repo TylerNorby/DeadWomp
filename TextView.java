@@ -1,4 +1,5 @@
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class TextView implements iView {
             int actionID = Integer.valueOf(input) - 1;
             if (actionID < 0 || actionID >= validActions.size())
             {
-                System.out.println("\nInvalid action, please try again.\n");
+                System.out.println("\nInvalid input: Out of range.\n");
                 return inputAction(validActions);
             }
             return validActions.get(actionID);
@@ -71,7 +72,7 @@ public class TextView implements iView {
             {
                 return Action.Nothing;
             }
-            System.out.print("\nInvalid action, please try again.\n");
+            System.out.print("\nInvalid input: Not a number.\n");
             return inputAction(validActions);
         }
     }
@@ -133,22 +134,32 @@ public class TextView implements iView {
      * @return
      */
     public String inputLocation(String[] validLocations) {
-        System.out.println("\nAvailable locations: ");
-        for (String location : validLocations) {
-            System.out.println(location);
+        System.out.println("\nSelect a location (\"q\" to cancel): ");
+        for (int i = 0; i < validLocations.length; ++i)
+        {
+            System.out.println((i + 1) + ": " + validLocations[i]);
         }
         System.out.print("Input: ");
         String input = System.console().readLine();
+        try 
+        {
+           int locationNum = Integer.parseInt(input);
+           --locationNum;
+           if (locationNum < 0 || locationNum >= validLocations.length)
+           {
+                System.out.println("\nInvalid input: Out of range.");
+                return inputLocation(validLocations);
+           }
+           else
+           {
+                return validLocations[locationNum];
+           }
 
-        int i = 0;
-        while (i < validLocations.length && !validLocations[i].equals(input)) {
-            ++i;
         }
-        if (i == validLocations.length) {
-            System.out.println("Not valid location, please try again.");
+        catch (NumberFormatException e)
+        {
+            System.out.println("\nInvalid input: Not a number.");
             return inputLocation(validLocations);
-        } else {
-            return input;
         }
 
     }
