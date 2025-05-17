@@ -94,16 +94,18 @@ public class ParseXML {
         //parse off-card roles
         NodeList roleList = node.getElementsByTagName("part");
         Part[] roles = new Part[roleList.getLength()];
-        len = roles.length;
+        len = roleList.getLength();
 
-        for (int i = 0; i < len; ++i)
+        int j = 0;
+        for (int i = 0; i < len; i += 1)
         {
             NamedNodeMap attributes = roleList.item(i).getAttributes();
             String roleName = attributes.getNamedItem("name").getNodeValue();
             int rank = Integer.parseInt(attributes.getNamedItem("level").getNodeValue());
-            String line = ((Element) roleList.item(i)).getChildNodes().item(1).getNodeValue();
+            String line = ((Element) roleList.item(i)).getElementsByTagName("line").item(0).getTextContent();
             Part role = new Part(roleName, line, rank, false);
-            roles[i] = role;
+            roles[j] = role;
+            ++j;
         }
         return new MovieSet(name, neighbors, shots, roles);
     }
@@ -156,15 +158,17 @@ public class ParseXML {
         String desc = scene.getChildNodes().item(0).getNodeValue();
         //parse Roles
         NodeList partList = ((Element) node).getElementsByTagName("part");
-        Part[] parts = new Part[partList.getLength()];
+        Part[] parts = new Part[partList.getLength()/2];
 
-        for (int i = 0; i < partList.getLength(); ++i)
+        int j = 0;
+        for (int i = 1; i < partList.getLength(); i+=2)
         {
             Node part = partList.item(i);
             String partName = part.getAttributes().getNamedItem("name").getNodeValue();
             int rank = Integer.parseInt(part.getAttributes().getNamedItem("level").getNodeValue());
             String line = part.getChildNodes().item(1).getNodeValue();
-            parts[i] = new Part(partName, line, rank, true);
+            parts[j] = new Part(partName, line, rank, true);
+            ++j;
         }
         return new Card(name, sceneNum, budget, desc, parts);
     }
