@@ -72,10 +72,13 @@ class GameManager {
         while (day < totalDays)
         {
             setupDay();
-            for(Player player : players)
+            while (gameBoard.getScenes() > 0)
             {
-                ArrayList<Action> possibleActions = validation.getPossibleActions(player); 
-                takeTurn(player, possibleActions);
+                for(Player player : players)
+                {
+                    ArrayList<Action> possibleActions = validation.getPossibleActions(player); 
+                    takeTurn(player, possibleActions);
+                }
             }
         }
     }

@@ -14,13 +14,23 @@ public class GameBoard {
     private Location[] locations;
     private Card[] cards;
     private int cardIndex;
+    private int scenes;
 
     public GameBoard() {
         locationMap = new HashMap<String, Location>();
         ParseXML parser = new ParseXML("board.xml", "cards.xml");
         locations = parser.parseBoard();
+
         cards = parser.parseCards();
         cardIndex = 0;
+        scenes = 0;
+        for (Location location : locations)
+        {
+            if (location instanceof MovieSet)
+            {
+                ++scenes;
+            }
+        }
 
         //shuffle cards 
         for (int i = 0; i < cards.length; ++i)
@@ -53,6 +63,11 @@ public class GameBoard {
     public Location[] getLocations()
     {
         return locations;
+    }
+
+    public int getScenes()
+    {
+        return scenes;
     }
 
     /**
