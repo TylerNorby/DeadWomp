@@ -107,7 +107,6 @@ public class ParseXML {
             Node part = partList.item(i);
             String partName = part.getAttributes().getNamedItem("name").getNodeValue();
             int rank = Integer.parseInt(part.getAttributes().getNamedItem("level").getNodeValue());
-            System.out.println(((Element) node).getElementsByTagName("line").item(0).getTextContent());
             String line = part.getChildNodes().item(3).getTextContent();
             parts[j] = new Part(partName, line, rank, true);
             ++j;
