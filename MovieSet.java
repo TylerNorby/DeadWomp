@@ -1,7 +1,9 @@
+
 import java.util.HashMap;
 
 /**
- * MovieSet object is a type of location that contains scenes and various other data points
+ * MovieSet object is a type of location that contains scenes and various other
+ * data points
  *
  * @author Ashley Spassov, Tyler Norby
  * @version 1.0
@@ -19,6 +21,13 @@ public class MovieSet extends Location {
         super(name, connections);
         this.shots = shots;
         this.extras = extras;
+        this.extraMap = new HashMap<>();
+
+        if (extras != null) {
+            for (Part extra : extras) {
+                this.extraMap.put(extra.getName(), extra);
+            }
+        }
     }
 
     /**
@@ -35,44 +44,56 @@ public class MovieSet extends Location {
     Checks if input role is extra or on SceneCard, then compares rank.
     **/
     public boolean validateRole(String name, int rank) {
-        Part role = extraMap.get(name);
-        if (role == null)
-        {
-            role = card.getRole(name);
-            return role != null && role.getRank() <= rank && role.inUse();
+        Part targetRole = null;
+        if (this.card != null) {
+            if (this.card.roleMap != null && this.card.roleMap.containsKey(name)) {
+                targetRole = this.card.roleMap.get(name);
+            }
         }
-        else
-        {
-            return role.getRank() <= rank && role.inUse();
+
+        if (targetRole == null) {
+            if (this.extraMap != null && this.extraMap.containsKey(name)) {
+                targetRole = this.extraMap.get(name);
+            }
+
         }
+
+        if (targetRole == null) {
+            return false;
+        }
+
+        if (targetRole.inUse()) {
+            return false;
+        }
+        return true;
     }
-    public boolean isExtra(String name)
-    {
-        Part role = extraMap.get(name); 
+
+    public boolean isExtra(String name) {
+        Part role = extraMap.get(name);
         return role != null;
     }
-    public int getShots()
-    {
+
+    public int getShots() {
         return shots;
     }
-    public int getShotCounter()
-    {
+
+    public int getShotCounter() {
         return shotCounter;
     }
-    public void removeShot()
-    {
+
+    public void removeShot() {
         --shotCounter;
     }
-    public Part[] getExtras()
-    {
+
+    public Part[] getExtras() {
         return extras;
     }
-    public Card getCard()
-    {
+
+    public Card getCard() {
         return card;
     }
-    public void setCard(Card card)
-    {
+
+    public void setCard(Card card) {
         this.card = card;
     }
 }
