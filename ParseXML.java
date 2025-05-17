@@ -1,3 +1,5 @@
+import java.util.Random;
+
 import javax.xml.parsers.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -12,6 +14,11 @@ public class ParseXML {
     private Document board;
     private Document cards;
 
+    /**
+     * 
+     * @param board xml file for game board
+     * @param cards xml file for game cards
+     */
     public ParseXML(String board, String cards)
     {
         try
@@ -28,7 +35,7 @@ public class ParseXML {
     }
 
     /**
-     * Get list of Location objects from Board document 
+     * Generate GameBoard from Board document, distribute scene cards into scenes after parsing
      */
     public Location[] parseBoard()
     {
@@ -60,13 +67,12 @@ public class ParseXML {
     }
 
     /**
-     * Return array of scenes from scenes XML
+     * Return array of scene cards from cards XML
      * @return
      */
     public Card[] parseCards()
     {
         NodeList nodes = cards.getDocumentElement().getChildNodes();
-        System.out.println(nodes.item(2));
         Card[] cards = new Card[nodes.getLength()/2];
 
         int j = 0;

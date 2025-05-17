@@ -18,7 +18,7 @@ class GameManager {
     public GameManager() {
         gameBoard = new GameBoard();
         validation = new ValidationManager(gameBoard);
-        view = new TextView(gameBoard); //only textview for now
+        view = new TextView(); //only textview for now
 
         int playerCount = view.inputPlayerCount();
 
@@ -77,7 +77,6 @@ class GameManager {
      */
     public void setupDay() 
     {
-        //call method in GameBoard
     }
 
     /**
@@ -119,7 +118,6 @@ class GameManager {
                 //display upgrade list, get input
                 break;
             case TakeRole:
-                //display available roles (if any), get input
                 break;
             case Nothing:
                 break;

@@ -2,7 +2,7 @@ public class Part {
     String name;
     String description;
     int rank;
-    int playerID;
+    Boolean inUse;
     Boolean onCard;
 
     /**
@@ -18,7 +18,7 @@ public class Part {
         this.description = description;
         this.rank = rank;
         this.onCard = onCard;
-        playerID = -1; //index into player array, -1 is empty
+        inUse = false; 
 }
 
     String getName()
@@ -33,9 +33,9 @@ public class Part {
     {
         return rank;
     }
-    int getPlayerID()
+    boolean inUse()
     {
-        return playerID;
+        return inUse;
     }
     Boolean onCard()
     {

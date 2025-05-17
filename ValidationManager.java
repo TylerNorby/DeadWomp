@@ -84,6 +84,10 @@ class ValidationManager
             {
                 possibleActions.add(Action.TakeRole);
             }
+            if (player.getLocation().equals("office"))
+            {
+                possibleActions.add(Action.Upgrade);
+            }
         }
         else
         {
@@ -91,10 +95,6 @@ class ValidationManager
             if (player.getChips() < 6)
             {
                 possibleActions.add(Action.Rehearse);
-            }
-            if (player.getLocation() == "office")
-            {
-                possibleActions.add(Action.Upgrade);
             }
         }
         return possibleActions;

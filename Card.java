@@ -16,6 +16,7 @@ public class Card{
         this.sceneNum = sceneNum;
         this.budget = budget;
         this.description = description;
+        roleMap = new HashMap<String, Part>();
 
         for (Part role: roles)
         {

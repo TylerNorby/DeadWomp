@@ -1,16 +1,8 @@
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TextView implements iView {
-
-    private GameBoard gameBoard;
-
-    public TextView(GameBoard gameBoard) {
-        this.gameBoard = gameBoard;
-    }
-
     public int inputPlayerCount() {
         System.out.print("\nEnter number of players (2-8): ");
         String input = System.console().readLine();
@@ -56,7 +48,7 @@ public class TextView implements iView {
                 System.out.println((i + 1) + ": " + validActions.get(i));
             }
         }
-        System.out.print("\nPlease select an action (enter to skip): ");
+        System.out.print("\nPlease select an action (Press enter to skip): ");
 
         String input = System.console().readLine();
         try {
@@ -158,6 +150,10 @@ public class TextView implements iView {
         }
         catch (NumberFormatException e)
         {
+            if (input.equals("q"))
+            {
+                return null;
+            }
             System.out.println("\nInvalid input: Not a number.");
             return inputLocation(validLocations);
         }
