@@ -66,9 +66,48 @@ public class ParseXML {
     public Card[] parseCards()
     {
         NodeList nodes = cards.getDocumentElement().getChildNodes();
-        Card[] cards = new Card[nodes.getLength()];
-        //TODO: Parse cards iterator
+        System.out.println(nodes.item(2));
+        Card[] cards = new Card[nodes.getLength()/2];
+
+        int j = 0;
+        for (int i = 1; i < nodes.getLength() - 1; i+=2)
+        {
+            cards[j] = getCard(nodes.item(i)); 
+            ++j;
+        }
         return cards;
+    }
+
+    /**
+     * Parse Scene object from Card node.
+     * @param node
+     * @return
+     */
+    private Card getCard(Node node)
+    {
+        //parse Card attributes
+        NamedNodeMap attributes = node.getAttributes();
+        String name = attributes.getNamedItem("name").getNodeValue();
+        int budget = Integer.parseInt(attributes.getNamedItem("budget").getNodeValue());
+        //parse Scene
+        Node scene = ((Element) node).getElementsByTagName("scene").item(0);
+        int sceneNum = Integer.parseInt(scene.getAttributes().getNamedItem("number").getNodeValue());
+        String desc = scene.getChildNodes().item(0).getNodeValue();
+        //parse Roles
+        NodeList partList = ((Element) node).getElementsByTagName("part");
+        Part[] parts = new Part[partList.getLength()/2];
+
+        int j = 0;
+        for (int i = 1; i < partList.getLength(); i+=2)
+        {
+            Node part = partList.item(i);
+            String partName = part.getAttributes().getNamedItem("name").getNodeValue();
+            int rank = Integer.parseInt(part.getAttributes().getNamedItem("level").getNodeValue());
+            String line = part.getChildNodes().item(1).getNodeValue();
+            parts[j] = new Part(partName, line, rank, true);
+            ++j;
+        }
+        return new Card(name, sceneNum, budget, desc, parts);
     }
 
     /**
@@ -141,35 +180,4 @@ public class ParseXML {
         return new Location(name, neighbors);
     }  
 
-    /**
-     * Parse Scene object from Card node.
-     * @param node
-     * @return
-     */
-    private Card getCard(Node node)
-    {
-        //parse Card attributes
-        NamedNodeMap attributes = node.getAttributes();
-        String name = attributes.getNamedItem("name").getNodeValue();
-        int budget = Integer.parseInt(attributes.getNamedItem("budget").getNodeValue());
-        //parse Scene
-        Node scene = ((Element) node).getElementsByTagName("scene").item(0);
-        int sceneNum = Integer.parseInt(scene.getAttributes().getNamedItem("number").getNodeValue());
-        String desc = scene.getChildNodes().item(0).getNodeValue();
-        //parse Roles
-        NodeList partList = ((Element) node).getElementsByTagName("part");
-        Part[] parts = new Part[partList.getLength()/2];
-
-        int j = 0;
-        for (int i = 1; i < partList.getLength(); i+=2)
-        {
-            Node part = partList.item(i);
-            String partName = part.getAttributes().getNamedItem("name").getNodeValue();
-            int rank = Integer.parseInt(part.getAttributes().getNamedItem("level").getNodeValue());
-            String line = part.getChildNodes().item(1).getNodeValue();
-            parts[j] = new Part(partName, line, rank, true);
-            ++j;
-        }
-        return new Card(name, sceneNum, budget, desc, parts);
-    }
 }
