@@ -67,13 +67,19 @@ public class GameBoard {
     }
 
     /**
-     * assigns next scene card in shuffled array to given movieset object 
+     * assigns next scene cards to all locations, resets shot counters
      *
      * @param location
      * @param scene
      */
-    public void nextScene(String location) {
-        ((MovieSet) getLocation(location)).setCard(cards[cardIndex++]);
+    public void nextDay() {
+        for (Location location : locations)
+        {
+            if (location instanceof MovieSet)
+            {
+                ((MovieSet) (location)).setCard(cards[cardIndex++]);
+            }
+        }
     }
 
 }

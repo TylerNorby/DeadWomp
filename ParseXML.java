@@ -99,15 +99,16 @@ public class ParseXML {
         String desc = scene.getChildNodes().item(0).getNodeValue();
         //parse Roles
         NodeList partList = ((Element) node).getElementsByTagName("part");
-        Part[] parts = new Part[partList.getLength()/2];
+        Part[] parts = new Part[partList.getLength()];
 
         int j = 0;
-        for (int i = 1; i < partList.getLength(); i+=2)
+        for (int i = 0; i < partList.getLength(); i+=1)
         {
             Node part = partList.item(i);
             String partName = part.getAttributes().getNamedItem("name").getNodeValue();
             int rank = Integer.parseInt(part.getAttributes().getNamedItem("level").getNodeValue());
-            String line = part.getChildNodes().item(1).getNodeValue();
+            System.out.println(((Element) node).getElementsByTagName("line").item(0).getTextContent());
+            String line = part.getChildNodes().item(3).getTextContent();
             parts[j] = new Part(partName, line, rank, true);
             ++j;
         }

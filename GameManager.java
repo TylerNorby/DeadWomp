@@ -57,26 +57,11 @@ class GameManager {
     }
 
     /**
-     * Handles move option 
-     * @param player
-     * @param start
-     * @param dest
-     */
-    private void Move(Player player)
-    {
-        String[] validLocations = gameBoard.getLocation(player.getLocation()).getConnections();
-        String destination = view.inputLocation(validLocations);
-        if (destination != null)
-        {
-            player.setLocation(destination);
-        }
-    }
-
-    /**
      * Reset shot counters, move players to trailer, redistribute scene cards
      */
     public void setupDay() 
     {
+        gameBoard.nextDay();
     }
 
     /**
@@ -86,12 +71,12 @@ class GameManager {
     {
         while (day < totalDays)
         {
+            setupDay();
             for(Player player : players)
             {
                 ArrayList<Action> possibleActions = validation.getPossibleActions(player); 
                 takeTurn(player, possibleActions);
             }
-            setupDay();
         }
     }
 
@@ -99,10 +84,20 @@ class GameManager {
     {
         view.displayBoard(gameBoard, player, players);
         Action playerAction = view.inputAction(possibleActions);
+        String[] validLocations;
         switch(playerAction)
         {
             case Move:
-                Move(player);
+                validLocations = gameBoard.getLocation(player.getLocation()).getConnections();
+                String destination = view.inputLocation(validLocations);
+                if (destination == null)
+                {
+                    takeTurn(player, possibleActions);
+                }
+                else
+                {
+                    player.setLocation(destination);
+                }
                 possibleActions = validation.getPossibleActions(player);
                 possibleActions.remove(Action.Move);
                 takeTurn(player, possibleActions);
@@ -121,13 +116,17 @@ class GameManager {
                 break;
             case View:
                 Location[] locations = gameBoard.getLocations();
-                String[] validLocations = new String[locations.length];
+                validLocations = new String[locations.length];
                 for (int i = 0; i < validLocations.length; ++i)
                 {
                     validLocations[i] = locations[i].getName();
                 }
                 String location = view.inputLocation(validLocations);
-                view.displayLocation(gameBoard, location);
+                if (location != null)
+                {
+                    view.displayLocation(gameBoard, location);
+                }
+                takeTurn(player, possibleActions);
                 break;
             case Nothing:
                 break;
