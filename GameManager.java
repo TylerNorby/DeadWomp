@@ -119,6 +119,16 @@ class GameManager {
                 break;
             case TakeRole:
                 break;
+            case View:
+                Location[] locations = gameBoard.getLocations();
+                String[] validLocations = new String[locations.length];
+                for (int i = 0; i < validLocations.length; ++i)
+                {
+                    validLocations[i] = locations[i].getName();
+                }
+                String location = view.inputLocation(validLocations);
+                view.displayLocation(gameBoard, location);
+                break;
             case Nothing:
                 break;
         }

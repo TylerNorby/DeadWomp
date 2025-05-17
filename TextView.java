@@ -210,4 +210,38 @@ public class TextView implements iView {
             }
         }
     }
+
+    public void displayLocation(GameBoard gameBoard, String locationName) {
+        Location location = gameBoard.getLocation(locationName); 
+        System.out.println("\n" + location.getName() + ": ");
+        if (location instanceof MovieSet)
+        {
+            Card card = ((MovieSet) location).getCard();
+            System.out.println("    Scene #" + card.getSceneNum() + ": \"" + card.getName() + "\"");
+            System.out.println("    Budget: $" + card.getBudget() + ",000,000");
+            System.out.println("    Description: " + card.getDescription());
+            
+            System.out.println("    Roles:");
+            Part[] roles = card.getRoles();
+            for (int i = 0; i < roles.length; ++i)
+            {
+                System.out.println("    \"" + roles[i].getName() + "\" (" + roles[i].getRank() + "):");
+                System.out.println("        \"" + roles[i].getLine() + "\"");
+                if (roles[i].inUse())
+                {
+                    System.out.println("        Taken");
+                }
+                else
+                {
+                    System.out.println("        Free");
+                }
+            }
+        }
+        else if (location instanceof CastingOffice)
+        {
+            //display rank upgrade information
+        }
+        System.out.println("Enter to continue.");
+        System.console().readLine();
+    }
 }

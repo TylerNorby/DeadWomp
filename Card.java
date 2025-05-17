@@ -6,8 +6,8 @@ public class Card{
     int sceneNum;
     int budget;
     String description;
+    Part[] roles;
 
-    ArrayList<Part> roleList;
     HashMap<String, Part> roleMap;
 
     public Card(String name, int sceneNum, int budget, String description, Part[] roles)
@@ -16,6 +16,7 @@ public class Card{
         this.sceneNum = sceneNum;
         this.budget = budget;
         this.description = description;
+        this.roles = roles;
         roleMap = new HashMap<String, Part>();
 
         for (Part role: roles)
@@ -28,22 +29,22 @@ public class Card{
     {
         return name;
     }
-
+    public int getSceneNum()
+    {
+        return sceneNum;
+    }
     public String getDescription() 
     {
         return description;
     }
-
     public int getBudget() 
     {
         return budget;
     }
-
-    public ArrayList<Part> getRoles()
+    public Part[] getRoles()
     {
-        return roleList;
+        return roles;
     }
-
     public Part getRole(String role){
         return roleMap.get(role);
     }

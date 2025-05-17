@@ -5,5 +5,6 @@ public enum Action
     Rehearse,
     Upgrade,
     TakeRole,
+    View,
     Nothing
 }

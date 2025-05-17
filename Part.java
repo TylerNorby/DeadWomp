@@ -1,6 +1,6 @@
 public class Part {
     String name;
-    String description;
+    String line;
     int rank;
     Boolean inUse;
     Boolean onCard;
@@ -12,10 +12,10 @@ public class Part {
      * @param rank
      * @param onCard
      */
-    public Part(String name, String description, int rank, Boolean onCard)
+    public Part(String name, String line, int rank, Boolean onCard)
     {
         this.name = name;
-        this.description = description;
+        this.line = line;
         this.rank = rank;
         this.onCard = onCard;
         inUse = false; 
@@ -25,9 +25,9 @@ public class Part {
     {
         return name;
     }
-    String getDescription()
+    String getLine()
     {
-        return description;
+        return line;
     }
     int getRank()
     {

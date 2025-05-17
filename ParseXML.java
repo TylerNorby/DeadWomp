@@ -1,5 +1,3 @@
-import java.util.Random;
-
 import javax.xml.parsers.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

@@ -77,6 +77,7 @@ class ValidationManager
     public ArrayList<Action> getPossibleActions(Player player)
     {
         ArrayList<Action> possibleActions = new ArrayList<Action>();
+        possibleActions.add(Action.View);
         if(player.role == null)
         {
             possibleActions.add(Action.Move);
