@@ -2,7 +2,7 @@
 import java.util.Random;
 
 public class Player {
-    public String name;
+    String name;
     String location;
     String role;
     int rank;

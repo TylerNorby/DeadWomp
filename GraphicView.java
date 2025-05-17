@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class GraphicView implements iView{
     GameBoard gameBoard;
@@ -32,14 +33,26 @@ public class GraphicView implements iView{
     }
 
     @Override
-    public void displayBoard(GameBoard gameBoard, Player activePlayer, Player[] players) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'displayBoard'");
-    }
-
-    @Override
     public String inputLocation(String[] validLocations) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'inputLocation'");
+    }
+
+    @Override
+    public void displayAvailableRoles(List<Part> roles) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'displayAvailableRoles'");
+    }
+
+    @Override
+    public String inputRoleChoice(List<Part> availableRoles) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'inputRoleChoice'");
+    }
+
+    @Override
+    public void displayBoard(GameBoard gameBoard, Player activePlayer, Player[] activePlayers) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'displayBoard'");
     }
 }

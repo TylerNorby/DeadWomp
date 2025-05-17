@@ -7,10 +7,6 @@
  */
 import java.util.HashMap;
 
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Document;
-
 public class GameBoard {
 
     private HashMap<String, Location> locationMap;

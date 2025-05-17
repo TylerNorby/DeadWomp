@@ -34,6 +34,8 @@ class GameManager {
             case 3:
                 totalDays = 3;
                 break;
+            case 4:
+                break;
             case 5:
                 startCredits = 2;
                 break;
@@ -94,8 +96,8 @@ class GameManager {
 
     private void takeTurn(Player player, ArrayList<Action> possibleActions) 
     {
+        view.displayBoard(gameBoard, player, players);
         Action playerAction = view.inputAction(possibleActions);
-        //call view to display board with active player highlighted
         switch(playerAction)
         {
             case Move:

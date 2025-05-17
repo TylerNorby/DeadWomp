@@ -61,6 +61,41 @@ public class TextView implements iView {
      * Display each location, show players in locations, highlight active player
      */
     public void displayBoard(GameBoard gameBoard, Player activePlayer, Player[] players) {
+        System.out.println("Locations: ");
+        Location[] locations = gameBoard.getLocations();
+        String[] playerLocations = new String[players.length];
+
+        for (int i = 0; i < playerLocations.length; ++i)
+        {
+            playerLocations[i] = players[i].getLocation();
+        }
+
+        for (Location location : locations)
+        {
+            System.out.println(location.getName() + ":");
+            for (int i = 0; i < playerLocations.length; ++i)
+            {
+                if (playerLocations[i].equals(location.getName()))
+                {
+                    if (players[i] == activePlayer)
+                    {
+                        System.out.print("    [" + players[i].getName() + "]");
+                    }
+                    else
+                    {
+                        System.out.print("    " + players[i].getName());
+                    }
+                    if (players[i].getRole() == null)
+                    {
+                        System.out.print(" (Idle)\n");
+                    }
+                    else
+                    {
+                        System.out.print(" (Acting)\n");
+                    }
+                }
+            }
+        }
     }
 
     /**
