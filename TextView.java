@@ -1,69 +1,57 @@
-import java.util.ArrayList;
 
-public class TextView implements iView{
+import java.util.ArrayList;
+import java.util.List;
+
+public class TextView implements iView {
+
     private GameBoard gameBoard;
 
-    public TextView(GameBoard gameBoard)
-    {
+    public TextView(GameBoard gameBoard) {
         this.gameBoard = gameBoard;
     }
 
-    public int inputPlayerCount()
-    {
+    public int inputPlayerCount() {
         System.out.print("\nEnter number of players (2-8): ");
         String input = System.console().readLine();
         int playerCount;
 
-        try
-        {
-           playerCount = Integer.valueOf(input);
-        }
-        catch(NumberFormatException e)
-        {
+        try {
+            playerCount = Integer.valueOf(input);
+        } catch (NumberFormatException e) {
             System.out.println("Input not number, please try again. ");
             playerCount = inputPlayerCount();
         }
 
-        if (playerCount >= 2 && playerCount <= 8)
-        {
+        if (playerCount >= 2 && playerCount <= 8) {
             return playerCount;
-        }
-        else
-        {
+        } else {
             System.out.println("Invalid number of players, please try again. ");
             return inputPlayerCount();
         }
     }
 
-    public String[] inputNames (int playerCount)
-    {
+    public String[] inputNames(int playerCount) {
         String[] names = new String[playerCount];
 
-        for (int i = 0; i < playerCount; ++i)
-        {
-            System.out.println("Enter player " + (i+1) + "'s name: ");
+        for (int i = 0; i < playerCount; ++i) {
+            System.out.println("Enter player " + (i + 1) + "'s name: ");
             names[i] = System.console().readLine();
         }
         System.out.println();
         return names;
     }
 
-    public Action inputAction(ArrayList<Action> validActions)
-    {
+    public Action inputAction(ArrayList<Action> validActions) {
         System.out.println("\nAvailable actions: ");
 
-        for(Action a: validActions)
-        {
+        for (Action a : validActions) {
             System.out.println(a);
         }
         System.out.print("Please enter an action: ");
 
-        try
-        {
+        try {
             return Action.valueOf(System.console().readLine());
-        }
-        catch(IllegalArgumentException e)
-        {
+        } catch (IllegalArgumentException e) {
             System.out.print("\nInvalid action, please try again.\n");
             return inputAction(validActions);
         }
@@ -72,38 +60,84 @@ public class TextView implements iView{
     /**
      * Display each location, show players in locations, highlight active player
      */
-    public void displayBoard(GameBoard gameBoard, Player activePlayer, Player[] players)
-    {
+    public void displayBoard(GameBoard gameBoard, Player activePlayer, Player[] players) {
     }
 
     /**
      * Display valid locations, validate & return input
+     *
      * @param validLocations
      * @return
      */
-    public String inputLocation(String[] validLocations)
-    {
+    public String inputLocation(String[] validLocations) {
         System.out.println("\nAvailable locations: ");
-        for (String location : validLocations)
-        {
+        for (String location : validLocations) {
             System.out.println(location);
         }
         System.out.print("Input: ");
-        String input = System.console().readLine(); 
+        String input = System.console().readLine();
 
         int i = 0;
-        while (i < validLocations.length && !validLocations[i].equals(input))
-        {
+        while (i < validLocations.length && !validLocations[i].equals(input)) {
             ++i;
         }
-        if (i == validLocations.length)
-        {
+        if (i == validLocations.length) {
             System.out.println("Not valid location, please try again.");
             return inputLocation(validLocations);
-        }
-        else
-        {
+        } else {
             return input;
+        }
+
+    }
+
+    public void displayAvailableRoles(List<Part> roles) {
+        System.out.println("\nAvailable Roles:"); 
+        if (roles == null || roles.isEmpty()) { 
+            System.out.println("  (None)");
+            return;
+        }
+        for (int i = 0; i < roles.size(); i++) {
+            Part role = roles.get(i);
+          
+            String type = role.onCard() ? "On Card" : "Extra";
+            System.out.println("  " + (i + 1) + ". " + role.getName() + " (Rank " + role.getRank() + ", " + type + ")");
+        }
+    }
+
+   
+    public String inputRoleChoice(List<Part> availableRoles) { 
+        if (availableRoles == null || availableRoles.isEmpty()) {
+       
+            System.out.println("No roles to choose from.");
+            return null; 
+        }
+
+        int choice = -1;
+        while (true) {
+            System.out.print("Enter the number of the role you want to take (or 0 to cancel): "); 
+            String input = System.console().readLine();
+
+            if (input == null) { 
+                System.out.println("Error reading input.");
+                return null; 
+            }
+
+            try {
+                choice = Integer.parseInt(input.trim()); 
+
+                if (choice == 0) {
+                    return null; 
+                }
+
+                if (choice >= 1 && choice <= availableRoles.size()) {
+        
+                    return availableRoles.get(choice - 1).getName();
+                } else {
+                    System.out.println("Invalid role number. Please enter a number from the list.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+            }
         }
     }
 }
