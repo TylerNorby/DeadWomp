@@ -104,7 +104,13 @@ class GameManager {
                 //display outcome, reward
                 break;
             case Rehearse:
-                //display outcome, reward
+            int currentChips = player.getChips();
+            if (currentChips < 6) {
+                player.setChips(currentChips + 1);
+                System.out.println(player.getName() + " rehearsed. They now have " + player.getChips() + " practice chips.");
+            } else {
+                System.out.println("You are at maximum rehearsals!");
+            }
                 break;
             case Upgrade:
                 //display upgrade list, get input
@@ -162,11 +168,6 @@ class GameManager {
                         // Player cancelled role selection, return to action selection
                         takeTurn(player, possibleActions);
                     }
-                } else {
-                    // This case should ideally not be reachable if getPossibleActions is correct,
-                    // but as a safeguard:
-                    System.out.println("You can only take a role at a movie set.");
-                    takeTurn(player, possibleActions);
                 }
                 break;
 
