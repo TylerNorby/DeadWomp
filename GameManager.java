@@ -86,32 +86,37 @@ class GameManager {
             for(Player player : players)
             {
                 ArrayList<Action> possibleActions = validation.getPossibleActions(player); 
-                Action playerAction = view.inputAction(possibleActions);
-                //call view to display board with active player highlighted
-                switch(playerAction)
-                {
-                    case Move:
-                        Move(player);
-                        possibleActions = validation.getPossibleActions(player);
-                        possibleActions.remove(Action.Move);
-
-                        break;
-                    case Act:
-                        validation.validateAct(player, player.rollDice());
-                        //display outcome, reward
-                        break;
-                    case Rehearse:
-                        //display outcome, reward
-                        break;
-                    case Upgrade:
-                        //display upgrade list, get input
-                        break;
-                    case TakeRole:
-                        //display available roles (if any), get input
-                        break;
-                }
+                takeTurn(player, possibleActions);
             }
             setupDay();
+        }
+    }
+
+    private void takeTurn(Player player, ArrayList<Action> possibleActions) 
+    {
+        Action playerAction = view.inputAction(possibleActions);
+        //call view to display board with active player highlighted
+        switch(playerAction)
+        {
+            case Move:
+                Move(player);
+                possibleActions = validation.getPossibleActions(player);
+                possibleActions.remove(Action.Move);
+                takeTurn(player, possibleActions);
+                break;
+            case Act:
+                validation.validateAct(player, player.rollDice());
+                //display outcome, reward
+                break;
+            case Rehearse:
+                //display outcome, reward
+                break;
+            case Upgrade:
+                //display upgrade list, get input
+                break;
+            case TakeRole:
+                //display available roles (if any), get input
+                break;
         }
     }
 

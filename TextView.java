@@ -50,7 +50,7 @@ public class TextView implements iView{
 
     public Action inputAction(ArrayList<Action> validActions)
     {
-        System.out.println("Available actions: ");
+        System.out.println("\nAvailable actions: ");
 
         for(Action a: validActions)
         {
@@ -83,27 +83,27 @@ public class TextView implements iView{
      */
     public String inputLocation(String[] validLocations)
     {
-        System.out.println("Available locations: ");
+        System.out.println("\nAvailable locations: ");
         for (String location : validLocations)
         {
             System.out.println(location);
         }
+        System.out.print("Input: ");
         String input = System.console().readLine(); 
 
         int i = 0;
-        while (i < validLocations.length && validLocations[i] != input)
+        while (i < validLocations.length && !validLocations[i].equals(input))
         {
             ++i;
         }
-
-        if (validLocations[i] == input)
-        {
-            return input;
-        }
-        else
+        if (i == validLocations.length)
         {
             System.out.println("Not valid location, please try again.");
             return inputLocation(validLocations);
+        }
+        else
+        {
+            return input;
         }
     }
 }

@@ -19,7 +19,7 @@ public class MovieSet extends Location {
         super(name, connections);
         this.shots = shots;
         this.extras = extras;
-        this.cards = cards;
+        this.cards = new Card[4];
     }
 
     /**

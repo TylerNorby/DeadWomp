@@ -54,8 +54,6 @@ public class ParseXML {
                     //parse payment info for bank 
                     break;
             }
-            System.out.println(locations.length + "/" + j);
-            System.out.println(locations[j]);
             ++j;
         }
         return locations;
@@ -69,6 +67,7 @@ public class ParseXML {
     {
         NodeList nodes = cards.getDocumentElement().getChildNodes();
         Card[] cards = new Card[nodes.getLength()];
+        //TODO: Parse cards iterator
         return cards;
     }
 
@@ -120,20 +119,22 @@ public class ParseXML {
 
         //parse neighbors
         NodeList neighborList = ((Element) node).getElementsByTagName("neighbors").item(0).getChildNodes();
-        String[] neighbors = new String[neighborList.getLength()];
-        int len = neighbors.length;
+        String[] neighbors = new String[neighborList.getLength()/2];
+        int len = neighborList.getLength();
 
-        for (int i = 0; i < len; ++i)
+        int j = 0;
+        for (int i = 1; i < len; i += 2) //parser outputs weird gaps in array
         {
             NamedNodeMap attributes = neighborList.item(i).getAttributes();
             if (attributes == null)
             {
-                neighbors[i] = neighborList.item(i).getNodeName();
+                neighbors[j] = neighborList.item(i).getNodeName();
             }
             else
             {
-                neighbors[i] = neighborList.item(i).getAttributes().getNamedItem("name").getNodeValue();
+                neighbors[j] = neighborList.item(i).getAttributes().getNamedItem("name").getNodeValue();
             }
+            ++j;
         }
         return new Location(name, neighbors);
     }  
@@ -156,6 +157,7 @@ public class ParseXML {
         //parse Roles
         NodeList partList = ((Element) node).getElementsByTagName("part");
         Part[] parts = new Part[partList.getLength()];
+
         for (int i = 0; i < partList.getLength(); ++i)
         {
             Node part = partList.item(i);
