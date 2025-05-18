@@ -106,13 +106,14 @@ public class TextView implements iView {
                     {
                         System.out.print("    " + players[i].getName());
                     }
-                    if (players[i].getRole() == null)
+                    String role = players[i].getRole();
+                    if (role == null)
                     {
-                        System.out.print(" (Idle)\n");
+                        System.out.print(" (No Role)\n");
                     }
                     else
                     {
-                        System.out.print(" (Acting)\n");
+                        System.out.print(" (Actor: " + role + ")\n");
                     }
                 }
             }
@@ -161,46 +162,43 @@ public class TextView implements iView {
     }
 
     public void displayAvailableRoles(List<Part> roles) {
-        System.out.println("\nAvailable Roles:"); 
-        if (roles == null || roles.isEmpty()) { 
-            System.out.println("  (None)");
-            return;
-        }
-        for (int i = 0; i < roles.size(); i++) {
-            Part role = roles.get(i);
-          
-            String type = role.onCard() ? "On Card" : "Extra";
-            System.out.println("  " + (i + 1) + ". " + role.getName() + " (Rank " + role.getRank() + ", " + type + ")");
+        if (!(roles == null || roles.isEmpty())) { 
+            System.out.println("\nAvailable Roles:"); 
+            for (int i = 0; i < roles.size(); i++) {
+                Part role = roles.get(i);
+            
+                String type = role.onCard() ? "On Card" : "Extra";
+                System.out.println("    " + (i + 1) + ". " + role.getName() + " (Rank " + role.getRank() + ", " + type + ")");
+                System.out.println("        \"" + role.getLine() + "\"");
+            }
         }
     }
 
    
     public String inputRoleChoice(List<Part> availableRoles) { 
         if (availableRoles == null || availableRoles.isEmpty()) {
-       
-            System.out.println("No roles to choose from.");
+            System.out.println("\nNo roles available for your rank. (Press Enter to continue):\n");
+            System.console().readLine();
             return null; 
         }
 
         int choice = -1;
         while (true) {
-            System.out.print("Enter the number of the role you want to take (or 0 to cancel): "); 
+            System.out.print("Enter the number of the role you want to take (q to cancel): "); 
             String input = System.console().readLine();
 
             if (input == null) { 
                 System.out.println("Error reading input.");
                 return null; 
             }
+            else if (input.trim().equals("q"))
+            {
+                return null;
+            }
 
             try {
                 choice = Integer.parseInt(input.trim()); 
-
-                if (choice == 0) {
-                    return null; 
-                }
-
                 if (choice >= 1 && choice <= availableRoles.size()) {
-        
                     return availableRoles.get(choice - 1).getName();
                 } else {
                     System.out.println("Invalid role number. Please enter a number from the list.");

@@ -94,6 +94,7 @@ class GameManager {
                     takeTurn(player, possibleActions);
                 } else {
                     player.setLocation(destination);
+                    view.displayLocation(gameBoard, destination);
                 }
                 possibleActions = validation.getPossibleActions(player);
                 possibleActions.remove(Action.Move);
@@ -104,13 +105,13 @@ class GameManager {
                 //display outcome, reward
                 break;
             case Rehearse:
-            int currentChips = player.getChips();
-            if (currentChips < 6) {
-                player.setChips(currentChips + 1);
-                System.out.println(player.getName() + " rehearsed. They now have " + player.getChips() + " practice chips.");
-            } else {
-                System.out.println("You are at maximum rehearsals!");
-            }
+                int currentChips = player.getChips();
+                if (currentChips < 6) {
+                    player.setChips(currentChips + 1);
+                    System.out.println(player.getName() + " rehearsed. They now have " + player.getChips() + " practice chips.");
+                } else {
+                    System.out.println("You are at maximum rehearsals!");
+                }
                 break;
             case Upgrade:
                 //display upgrade list, get input
@@ -133,13 +134,6 @@ class GameManager {
                         if (!extra.inUse() && player.getRank() >= extra.getRank()) {
                             availableRoles.add(extra);
                         }
-                    }
-
-                    if (availableRoles.isEmpty()) {
-                        System.out.println("No available roles at this location with your rank.");
-                        // Return to the action selection without taking a role
-                        takeTurn(player, possibleActions);
-                        break;
                     }
 
                     view.displayAvailableRoles(availableRoles);
