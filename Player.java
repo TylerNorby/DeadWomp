@@ -15,7 +15,7 @@ public class Player {
         this.rank = rank;
         this.money = 0;
         this.credits = credits;
-        this.location = "trailer";
+        this.location = "Trailer";
     }
 
     public int rollDice()

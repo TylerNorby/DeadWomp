@@ -173,15 +173,18 @@ public class ParseXML {
             NamedNodeMap attributes = neighborList.item(i).getAttributes();
             if (attributes == null)
             {
-                neighbors[j] = neighborList.item(i).getNodeName();
+                
+                String neighbor = neighborList.item(i).getNodeName();
+                neighbors[j] = neighbor.substring(0,1).toUpperCase() + neighbor.substring(1,neighbor.length()); 
             }
             else
             {
-                neighbors[j] = neighborList.item(i).getAttributes().getNamedItem("name").getNodeValue();
+                String neighbor = neighborList.item(i).getAttributes().getNamedItem("name").getNodeValue();
+                neighbors[j] = neighbor.substring(0,1) + neighbor.substring(1,neighbor.length());
             }
             ++j;
         }
-        return new Location(name, neighbors);
+        return new Location(name.substring(0,1).toUpperCase() + name.substring(1,name.length()), neighbors);
     }  
 
 }
