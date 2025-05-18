@@ -12,24 +12,6 @@ import java.util.Random;
  */
 public class Bank {
 
-    int rankCredits[];
-    int rankMoney[];
-
-    public Bank() {
-    }
-
-    /**
-     * Manages player upgrades, uses player data to check that upgrade is valid,
-     * and then upgrades to desired rank
-     *
-     * @param player
-     * @param rank
-     * @return boolean of if the upgrade was successful or not
-     */
-    public boolean upgrade(Player player, int rank) {
-        return true;
-    }
-
     /**
      * Calculate payout for list of players with certain movie budget
      * @param movieBudget

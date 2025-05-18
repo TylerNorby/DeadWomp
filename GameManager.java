@@ -22,8 +22,8 @@ class GameManager {
     public GameManager() {
         gameBoard = new GameBoard();
         validation = new ValidationManager(gameBoard);
-        view = new TextView(); //only textview for now
         bank = new Bank();
+        view = new TextView(); //only textview for now
 
         int playerCount = view.inputPlayerCount();
 
@@ -116,6 +116,8 @@ class GameManager {
         Action playerAction = view.inputAction(possibleActions);
         String[] validLocations;
         Location currentLocation = gameBoard.getLocation(player.getLocation());
+        MovieSet currentMovieSet;
+
         switch (playerAction) {
             case Move:
                 validLocations = gameBoard.getLocation(player.getLocation()).getConnections();
@@ -131,9 +133,7 @@ class GameManager {
                 takeTurn(player, possibleActions);
                 break;
             case Act:
-                currentLocation = gameBoard.getLocation(player.getLocation());
-                MovieSet currentMovieSet = (MovieSet) currentLocation;
-                int rollAmount = player.rollDice();
+                currentMovieSet = (MovieSet) gameBoard.getLocation(player.getLocation());
                 Part playerRole = currentMovieSet.getRole(player.getRole());
                 boolean success = validation.validateAct(player);
 
@@ -160,53 +160,42 @@ class GameManager {
                 //display upgrade list, get input
                 break;
             case TakeRole:
-                if (currentLocation instanceof MovieSet) {
-                    currentMovieSet = (MovieSet) currentLocation;
-                    List<Part> availableRoles = new ArrayList<>();
+                currentMovieSet = (MovieSet) currentLocation;
+                List<Part> availableRoles = new ArrayList<>();
+                List<Part> unavailableRoles = new ArrayList<>();
 
-                    // Add available on-card roles
-                    for (Part role : currentMovieSet.getCard().getRoles()) {
-                        if (!role.inUse() && player.getRank() >= role.getRank()) {
-                            availableRoles.add(role);
-                        }
+                // Add available on-card roles
+                for (Part role : currentMovieSet.getCard().getRoles()) {
+                    if (!role.inUse() && player.getRank() >= role.getRank()) {
+                        availableRoles.add(role);
                     }
-
-                    // Add available extra roles
-                    for (Part extra : currentMovieSet.getExtras()) {
-                        if (!extra.inUse() && player.getRank() >= extra.getRank()) {
-                            availableRoles.add(extra);
-                        }
-                    }
-
-                    view.displayAvailableRoles(availableRoles);
-                    String chosenRoleName = view.inputRoleChoice(availableRoles);
-
-                    if (chosenRoleName != null) {
-                        // Find the chosen role object
-                        Part chosenRole = null;
-                        for (Part role : availableRoles) {
-                            if (role.getName().equals(chosenRoleName)) {
-                                chosenRole = role;
-                                break;
-                            }
-                        }
-
-                        if (chosenRole != null && validation.validateTakeRole(chosenRoleName, player)) {
-                            player.setRole(chosenRoleName);
-                            chosenRole.inUse = true; // Assuming 'inUse' is public or has a setter
-                            System.out.println(player.getName() + " successfully took the role of " + chosenRoleName);
-                        } else {
-                            System.out.println("Invalid role choice or you do not meet the requirements for this role.");
-                            // Re-display possible actions and take turn if role selection failed
-                            takeTurn(player, possibleActions);
-                        }
-                    } else {
-                        // Player cancelled role selection, return to action selection
-                        takeTurn(player, possibleActions);
+                    else
+                    {
+                        unavailableRoles.add(role);
                     }
                 }
-                break;
+                // Add available extra roles
+                for (Part extra : currentMovieSet.getExtras()) {
+                    if (!extra.inUse() && player.getRank() >= extra.getRank()) {
+                        availableRoles.add(extra);
+                    }
+                    else
+                    {
+                        unavailableRoles.add(extra);
+                    }
+                }
 
+                view.displayRoles(availableRoles, unavailableRoles);
+                String chosenRoleName = view.inputRoleChoice(availableRoles); //view class and availableRoles ensure only valid options may be returned
+
+                if (chosenRoleName == "q") {
+                    takeTurn (player, possibleActions); 
+                }
+                else
+                {
+                    player.setRole(chosenRoleName);
+                }
+                break;
             case View:
                 Location[] locations = gameBoard.getLocations();
                 validLocations = new String[locations.length];

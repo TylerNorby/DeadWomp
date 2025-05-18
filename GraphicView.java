@@ -39,7 +39,7 @@ public class GraphicView implements iView{
     }
 
     @Override
-    public void displayAvailableRoles(List<Part> roles) {
+    public void displayRoles(List<Part> availableRoles, List<Part> unavailableRoles) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'displayAvailableRoles'");
     }

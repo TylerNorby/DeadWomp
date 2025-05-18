@@ -162,16 +162,24 @@ public class TextView implements iView {
 
     }
 
-    public void displayAvailableRoles(List<Part> roles) {
-        if (!(roles == null || roles.isEmpty())) { 
+    public void displayRoles(List<Part> availableRoles, List<Part> unavailableRoles) {
+        if (!(availableRoles == null || availableRoles.isEmpty())) { 
             System.out.println("\nAvailable Roles:"); 
-            for (int i = 0; i < roles.size(); i++) {
-                Part role = roles.get(i);
+            for (int i = 0; i < availableRoles.size(); i++) {
+                Part role = availableRoles.get(i);
             
-                String type = role.onCard() ? "On Card" : "Extra";
-                System.out.println("    " + (i + 1) + ". " + role.getName() + " (Rank " + role.getRank() + ", " + type + ")");
+                String type = role.onCard() ? "Part" : "Extra";
+                System.out.println("    " + (i + 1) + ". " + role.getName() + " (" + role.getRank() + "): " + type);
                 System.out.println("        \"" + role.getLine() + "\"");
             }
+        }
+        System.out.println("Unavailable Roles:");
+        for (int i = 0; i < unavailableRoles.size(); i++) {
+            Part role = unavailableRoles.get(i);
+        
+            String type = role.onCard() ? "Part" : "Extra";
+            System.out.println("     " + role.getName() + " (" + role.getRank() + "): " + type);
+            System.out.println("        \"" + role.getLine() + "\"");
         }
     }
 
