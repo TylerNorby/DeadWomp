@@ -84,7 +84,13 @@ public class TextView implements iView {
 
         for (Location location : locations)
         {
-            System.out.print(location.getName() + ":     ->     ");
+            System.out.print(location.getName());
+            if (location instanceof MovieSet)
+            {
+                MovieSet movieSet = (MovieSet) location;
+                System.out.print(" (" + movieSet.getShotCounter() + "/" + movieSet.getShots() + ")");
+            }
+            System.out.print(":     ->     ");
             String[] neighbors = location.getConnections();
 
             int i;
@@ -223,8 +229,11 @@ public class TextView implements iView {
         System.out.println("\n" + location.getName() + ": ");
         if (location instanceof MovieSet)
         {
-            Card card = ((MovieSet) location).getCard();
+            MovieSet movieSet = (MovieSet) location;
+            Card card = movieSet.getCard();
+
             System.out.println("    Scene #" + card.getSceneNum() + ": \"" + card.getName() + "\"");
+            System.out.println("    Shots: " + movieSet.getShotCounter() + "/" + movieSet.getShots());
             System.out.println("    Budget: $" + card.getBudget() + ",000,000");
             System.out.println("    Description: " + card.getDescription());
             System.out.println("    Parts:");
@@ -270,10 +279,38 @@ public class TextView implements iView {
             for (int i = 0; i < moneyCost.length; ++i)
             {
                 System.out.println("        Rank " + (i+2) + ": " + moneyCost[i] + " dollars / " + creditCost[i] + " credits");
-
             }
         }
         System.out.println("Press enter to continue.");
         System.console().readLine();
+    }
+
+    @Override
+    public void displayAct(boolean success, int money, int credits) {
+        System.out.println("\nActing: ");
+        if (success)
+        {
+            System.out.println("    Success!");
+        }
+        else
+        {
+            System.out.println("    Failure.");
+        }
+        if (money != 0)
+        {
+            System.out.println("    " + money + " dollars.");
+        }
+        if (credits != 0)
+        {
+            System.out.println("    " + credits + " credits.");
+        }
+        System.out.println("\nPress enter to continue.");
+        System.console().readLine();
+    }
+
+    @Override
+    public void displaySceneWrap(Player[] players, int[] payouts) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'displaySceneWrap'");
     }
 }

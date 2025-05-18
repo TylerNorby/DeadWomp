@@ -24,13 +24,6 @@ public class GameBoard {
         cards = parser.parseCards();
         cardIndex = 0;
         scenes = 0;
-        for (Location location : locations)
-        {
-            if (location instanceof MovieSet)
-            {
-                ++scenes;
-            }
-        }
 
         //shuffle cards 
         for (int i = 0; i < cards.length; ++i)
@@ -70,6 +63,11 @@ public class GameBoard {
         return scenes;
     }
 
+    public void removeScene()
+    {
+        --scenes;
+    }
+
     /**
      * Validates that two location names are actually next to each other on the game board
      *
@@ -92,7 +90,10 @@ public class GameBoard {
         {
             if (location instanceof MovieSet)
             {
-                ((MovieSet) (location)).setCard(cards[cardIndex++]);
+                MovieSet movieSet = (MovieSet) location;
+                movieSet.setCard(cards[cardIndex++]);
+                movieSet.resetShotCounter();
+                ++scenes;
             }
         }
     }

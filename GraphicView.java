@@ -61,4 +61,16 @@ public class GraphicView implements iView{
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'displayLocation'");
     }
+
+    @Override
+    public void displayAct(boolean success, int money, int credits) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'displayAct'");
+    }
+
+    @Override
+    public void displaySceneWrap(Player[] players, int[] payouts) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'displaySceneWrap'");
+    }
 }

@@ -111,6 +111,11 @@ public class MovieSet extends Location {
         --shotCounter;
     }
 
+    public void resetShotCounter()
+    {
+        shotCounter = shots;
+    }
+
     public Part[] getExtras() {
         return extras;
     }

@@ -34,9 +34,9 @@ class ValidationManager {
      * @param player
      * @return
      */
-    public boolean validateAct(Player player)
+    public boolean validateAct(String location, int diceRoll)
     {
-        return ((MovieSet) gameBoard.getLocation(player.getLocation())).actingSuccess(player.rollDice());
+        return ((MovieSet) gameBoard.getLocation(location)).actingSuccess(diceRoll);
     }
 
     /**
@@ -70,18 +70,25 @@ class ValidationManager {
      */
     public ArrayList<Action> getPossibleActions(Player player) {
         ArrayList<Action> possibleActions = new ArrayList<Action>();
+        Location location = gameBoard.getLocation(player.getLocation());
         possibleActions.add(Action.View);
-        if (player.role == null) {
+        if (player.role == null) 
+        {
             possibleActions.add(Action.Move);
-            if (gameBoard.getLocation(player.getLocation()) instanceof MovieSet) {
+            if (location instanceof MovieSet && ((MovieSet) location).getCard() != null)
+            {
                 possibleActions.add(Action.TakeRole);
             }
-            if (player.getLocation().equals("office")) {
+            if (player.getLocation().equals("office"))
+            {
                 possibleActions.add(Action.Upgrade);
             }
-        } else {
+        }
+        else if (location instanceof MovieSet && ((MovieSet) location).getCard() != null) 
+        {
             possibleActions.add(Action.Act);
-            if (player.getChips() < 6) {
+            if (player.getChips() < 6)
+            {
                 possibleActions.add(Action.Rehearse);
             }
         }

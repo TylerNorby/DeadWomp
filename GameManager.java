@@ -22,8 +22,8 @@ class GameManager {
     public GameManager() {
         gameBoard = new GameBoard();
         validation = new ValidationManager(gameBoard);
-        bank = new Bank();
         view = new TextView(); //only textview for now
+        bank = new Bank(view);
 
         int playerCount = view.inputPlayerCount();
 
@@ -64,8 +64,23 @@ class GameManager {
     /**
      * Reset shot counters, move players to trailer, redistribute scene cards
      */
-    public void setupDay() {
+    private void setupDay() {
         gameBoard.nextDay();
+        for (Player player : players)
+        {
+            player.setLocation("Trailer");
+        }
+    }
+
+    private void sceneWrap(MovieSet movieSet)
+    {
+        scenePayout(movieSet.getName());
+        movieSet.setCard(null); 
+        gameBoard.removeScene();
+        if (gameBoard.getScenes() == 0)
+        {
+            setupDay();
+        }
     }
 
     /**
@@ -132,22 +147,22 @@ class GameManager {
                 possibleActions.remove(Action.Move);
                 takeTurn(player, possibleActions);
                 break;
+
             case Act:
                 currentMovieSet = (MovieSet) gameBoard.getLocation(player.getLocation());
                 Part playerRole = currentMovieSet.getRole(player.getRole());
-                boolean success = validation.validateAct(player);
+                boolean success = validation.validateAct(player.getLocation(), player.rollDice());
 
                 if (success)
                 {
                     currentMovieSet.removeShot();
-                    bank.turnPayout(player, validation.validateAct(player), playerRole.onCard());
 
                     if (currentMovieSet.getShotCounter() == 0)
                     {
-                        scenePayout(player.getLocation());
+                        sceneWrap(currentMovieSet);
                     }
                 }
-                bank.turnPayout(player, success, playerRole.onCard()); 
+                bank.turnPayout(player, success, playerRole.onCard());
                 break;
 
             case Rehearse:
@@ -156,9 +171,10 @@ class GameManager {
                     player.setChips(currentChips + 1);
                 }
                 break;
+
             case Upgrade:
-                //display upgrade list, get input
                 break;
+
             case TakeRole:
                 currentMovieSet = (MovieSet) currentLocation;
                 List<Part> availableRoles = new ArrayList<>();

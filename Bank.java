@@ -12,6 +12,11 @@ import java.util.Random;
  */
 public class Bank {
 
+    iView view;
+    public Bank(iView view)
+    {
+        this.view = view;
+    }
     /**
      * Calculate payout for list of players with certain movie budget
      * @param movieBudget
@@ -51,24 +56,29 @@ public class Bank {
      * @param onCard
      */
     public void turnPayout(Player player, boolean success, boolean onCard) {
+        int credits = 0;
+        int money = 0;
         if (success)
         {
             if (onCard)
             {
-                player.addCredits(2);
+                credits = 2;
             }
             else
             {
-                player.addCredits(1);
-                player.addMoney(1);
+                credits = 1;
+                money = 1; 
             }
         }
         else
         {
             if (!onCard)
             {
-                player.addMoney(1);
+                money = 1; 
             }
         }
+        view.displayAct(success, money, credits);
+        player.addCredits(credits);
+        player.addMoney(money);
     }
 }
