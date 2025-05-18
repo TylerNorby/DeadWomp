@@ -69,7 +69,8 @@ public class GraphicView implements iView{
     }
 
     @Override
-    public void displaySceneWrap(Player[] players, int[] payouts) {
+    public void displaySceneWrap(ArrayList<Player> offCardPlayers, ArrayList<Player> onCardPlayers, int[] onCardPayouts,
+            int[] offCardPayouts) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'displaySceneWrap'");
     }

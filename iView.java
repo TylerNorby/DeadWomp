@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public interface iView extends iInput{
@@ -5,5 +6,5 @@ public interface iView extends iInput{
     public void displayRoles(List<Part> availableRoles, List<Part> unavailableRoles);
     public void displayLocation(GameBoard gameBoard, String locationName);
     public void displayAct(boolean success, int money, int credits);
-    public void displaySceneWrap(Player[] players, int[] payouts);
+    public void displaySceneWrap(ArrayList<Player> offCardPlayers, ArrayList<Player> onCardPlayers, int[] onCardPayouts, int[] offCardPayouts);
 }

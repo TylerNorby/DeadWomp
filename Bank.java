@@ -26,6 +26,9 @@ public class Bank {
     {
         // Roll dice equal to the budget
         int[] diceRolls = new int[budget];
+        int[] onCardPayouts = new int[onCardPlayers.size()];
+        int[] offCardPayouts = new int[extraPlayers.size()];
+
         Random random = new Random();
         for (int i = 0; i < budget; i++) {
             diceRolls[i] = random.nextInt(1,7);
@@ -41,15 +44,19 @@ public class Bank {
                 {
                     j = 0;
                 }
-                Player player = onCardPlayers.get(j);
-                int payout = diceRolls[i];
-                player.addMoney(payout);
+                onCardPayouts[j] += diceRolls[i];
+                onCardPlayers.get(j).addMoney(diceRolls[i]);
                 ++j;
             }
         }
-        for (Player player : extraPlayers) {
-            player.addMoney(player.getRank());
+        for (int i = 0; i < extraPlayers.size(); ++i)
+        {
+            offCardPayouts[i] += extraPlayers.get(i).getRank();
+            extraPlayers.get(i).addMoney(extraPlayers.get(i).getRank());
         }
+        view.displaySceneWrap(onCardPlayers, extraPlayers, onCardPayouts, offCardPayouts);
+
+
     }
 
     /**

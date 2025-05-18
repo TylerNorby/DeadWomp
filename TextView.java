@@ -88,7 +88,14 @@ public class TextView implements iView {
             if (location instanceof MovieSet)
             {
                 MovieSet movieSet = (MovieSet) location;
-                System.out.print(" ($" + movieSet.getCard().getBudget() + ",000,000) (" + movieSet.getShotCounter() + "/" + movieSet.getShots() + ")");
+                if (movieSet.getCard() == null)
+                {
+                    System.out.print(" (Finished)");
+                }
+                else
+                {
+                    System.out.print(" ($" + movieSet.getCard().getBudget() + ",000,000) (" + movieSet.getShotCounter() + "/" + movieSet.getShots() + ")");
+                }
             }
             System.out.print(":     ->     ");
             String[] neighbors = location.getConnections();
@@ -308,9 +315,20 @@ public class TextView implements iView {
         System.console().readLine();
     }
 
-    @Override
-    public void displaySceneWrap(Player[] players, int[] payouts) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'displaySceneWrap'");
+    public void displaySceneWrap(ArrayList<Player> onCardPlayers, ArrayList<Player> offCardPlayers, int[] offCardPayouts, int[] onCardPayouts)
+    {
+        System.out.println("\n    Payouts:\n    Parts:");
+        for (int i = 0; i < onCardPlayers.size(); ++i)
+        {
+            Player player = onCardPlayers.get(i);
+            System.out.println("        \"" + player.getName() + "\": " + onCardPayouts[i] + " dollars.");
+        }
+        System.out.println("    Extras:");
+        for (int i = 0; i < offCardPlayers.size(); ++i)
+        {
+            Player player = offCardPlayers.get(i);
+            System.out.println("        \"" + player.getName() + "\": " + offCardPayouts[i] + " dollars.");
+        }
+        System.out.println("\nPress enter to continue:");
     }
 }

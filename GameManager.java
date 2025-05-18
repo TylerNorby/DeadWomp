@@ -114,7 +114,7 @@ class GameManager {
         
         for (Player player : players)
         {
-            if (player.getLocation() == location)
+            if (player.getLocation().equals(location))
             {
                 boolean onCard = currentSet.getRole(player.getRole()).onCard();
                 if (onCard)
@@ -155,7 +155,7 @@ class GameManager {
             case Act:
                 currentMovieSet = (MovieSet) gameBoard.getLocation(player.getLocation());
                 Part playerRole = currentMovieSet.getRole(player.getRole());
-                boolean success = validation.validateAct(player.getLocation(), player.rollDice());
+                boolean success = validation.validateAct(player.getLocation(), player.rollDice() + player.getChips());
 
                 if (success)
                 {
