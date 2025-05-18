@@ -262,7 +262,16 @@ public class TextView implements iView {
         }
         else if (location instanceof CastingOffice)
         {
-            //display rank upgrade information
+            System.out.println("    Upgrades: ");
+            CastingOffice castingOffice = (CastingOffice) location;
+            int[] moneyCost = castingOffice.getMoneyCost();
+            int[] creditCost = castingOffice.getCreditCost();
+
+            for (int i = 0; i < moneyCost.length; ++i)
+            {
+                System.out.println("        Rank " + (i+2) + ": " + moneyCost[i] + " dollars / " + creditCost[i] + " credits");
+
+            }
         }
         System.out.println("Press enter to continue.");
         System.console().readLine();

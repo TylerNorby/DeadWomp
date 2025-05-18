@@ -8,13 +8,24 @@
  */
 public class CastingOffice extends Location {
 
-    private static final int[] RANK_COSTS_MONEY = {0, 4, 10, 18, 28, 40};
-    private static final int[] RANK_COSTS_CREDITS = {0, 5, 10, 15, 20, 25};
+    private int moneyCost[];
+    private int creditCost[];
 
-    public CastingOffice(String name, String[] connections) {
+    public CastingOffice(String name, String[] connections, int[] moneyCost, int[] creditCost) {
         super(name, connections);
+        this.moneyCost = moneyCost;
+        this.creditCost = creditCost;
     }
 
+    public int[] getMoneyCost()
+    {
+        return moneyCost;
+    }
+    
+    public int[] getCreditCost()
+    {
+        return creditCost;
+    }
     /**
      * Manages player upgrades, uses player data to check that upgrade is valid,
      * and then upgrades to desired rank
@@ -22,9 +33,9 @@ public class CastingOffice extends Location {
      * @param rank
      * @return the cost of the desired rank in money
      */
-    public static int getMoneyCost(int rank) {
+    public int getMoneyCost(int rank) {
         if (rank >= 2 && rank <= 6) {
-            return RANK_COSTS_MONEY[rank - 1]; // Adjust for 0-based index
+            return moneyCost[rank - 1]; // Adjust for 0-based index
         }
         return -1;
     }
@@ -36,9 +47,9 @@ public class CastingOffice extends Location {
      * @param rank
      * @return the cost of the desired rank in credits
      */
-    public static int getCreditCost(int rank) {
+    public int getCreditCost(int rank) {
         if (rank >= 2 && rank <= 6) {
-            return RANK_COSTS_CREDITS[rank - 1]; // Adjust for 0-based index
+            return creditCost[rank - 1]; // Adjust for 0-based index
         }
         return -1;
     }

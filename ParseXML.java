@@ -54,9 +54,8 @@ public class ParseXML {
                     locations[j] = location;
                     break;
                 case "office":
-                    Location office = getLocation((Element) nodes.item(i));
+                    CastingOffice office = getCastingOffice((Element) nodes.item(i));
                     locations[j] = office;
-                    //parse payment info for bank 
                     break;
             }
             ++j;
@@ -186,5 +185,53 @@ public class ParseXML {
         }
         return new Location(name.substring(0,1).toUpperCase() + name.substring(1,name.length()), neighbors);
     }  
+
+    private CastingOffice getCastingOffice(Node node)
+    {
+        String name = node.getNodeName();
+
+        //parse neighbors
+        NodeList neighborList = ((Element) node).getElementsByTagName("neighbors").item(0).getChildNodes();
+        String[] neighbors = new String[neighborList.getLength()/2];
+        int len = neighborList.getLength();
+
+        int j = 0;
+        for (int i = 1; i < len; i += 2) //parser outputs weird gaps in array
+        {
+            NamedNodeMap attributes = neighborList.item(i).getAttributes();
+            if (attributes == null)
+            {
+                
+                String neighbor = neighborList.item(i).getNodeName();
+                neighbors[j] = neighbor.substring(0,1).toUpperCase() + neighbor.substring(1,neighbor.length()); 
+            }
+            else
+            {
+                String neighbor = neighborList.item(i).getAttributes().getNamedItem("name").getNodeValue();
+                neighbors[j] = neighbor.substring(0,1) + neighbor.substring(1,neighbor.length());
+            }
+            ++j;
+        }
+
+        NodeList costs = ((Element) node).getElementsByTagName("upgrade");
+        int[] moneyCost = new int[costs.getLength()/2];
+        int[] creditCost = new int[costs.getLength()/2];
+        for (int i = 0; i < costs.getLength(); i += 1)
+        {
+            NamedNodeMap attributes = costs.item(i).getAttributes();
+            int level = Integer.parseInt(attributes.getNamedItem("level").getTextContent());
+            int amt = Integer.parseInt(attributes.getNamedItem("amt").getTextContent());
+
+            if (attributes.getNamedItem("currency").getNodeValue().equals("dollar"))
+            {
+                moneyCost[level-2] = amt; 
+            }
+            else
+            {
+                creditCost[level-2] = amt;
+            }
+        }
+        return new CastingOffice(name.substring(0,1).toUpperCase() + name.substring(1,name.length()), neighbors, moneyCost, creditCost);
+    }
 
 }

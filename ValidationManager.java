@@ -51,10 +51,11 @@ class ValidationManager {
         Location location = gameBoard.getLocation(player.getLocation());
 
         if (location instanceof CastingOffice) {
+            CastingOffice castingOffice = (CastingOffice) location;
             if (useCredits) {
-                return (player.getCredits() >= CastingOffice.getCreditCost(desiredRank) && CastingOffice.getCreditCost(desiredRank) != -1);
+                return (player.getCredits() >= castingOffice.getCreditCost(desiredRank) && castingOffice.getCreditCost(desiredRank) != -1);
             } else {
-                return (player.getCredits() >= CastingOffice.getMoneyCost(desiredRank) && CastingOffice.getMoneyCost(desiredRank) != -1);
+                return (player.getMoney() >= castingOffice.getMoneyCost(desiredRank) && castingOffice.getMoneyCost(desiredRank) != -1);
             }
         } else {
             return false;
