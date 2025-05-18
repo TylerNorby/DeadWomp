@@ -103,9 +103,9 @@ public class TextView implements iView {
             int i;
             for (i = 0; i < neighbors.length - 1; ++i)
             {
-                System.out.print(neighbors[i] + ", ");
+                System.out.print(neighbors[i].substring(0,1).toUpperCase() + neighbors[i].substring(1,neighbors[i].length()) + ", ");
             }
-            System.out.print(neighbors[i] + "\n");
+            System.out.print(neighbors[i].substring(0,1).toUpperCase() + neighbors[i].substring(1,neighbors[i].length()) + "\n");
 
             for (i = 0; i < playerLocations.length; ++i)
             {
@@ -144,7 +144,7 @@ public class TextView implements iView {
         System.out.println("\nSelect a location (\"q\" to cancel): ");
         for (int i = 0; i < validLocations.length; ++i)
         {
-            System.out.println((i + 1) + ": " + validLocations[i]);
+            System.out.println((i + 1) + ": " + validLocations[i].substring(0,1).toUpperCase() + validLocations[i].substring(1,validLocations[i].length()));
         }
         System.out.print("Input: ");
         String input = System.console().readLine();
@@ -176,6 +176,7 @@ public class TextView implements iView {
     }
 
     public void displayRoles(List<Part> availableRoles, List<Part> unavailableRoles) {
+        System.out.println();
         if (!(availableRoles == null || availableRoles.isEmpty())) { 
             System.out.println("\nAvailable Roles:"); 
             for (int i = 0; i < availableRoles.size(); i++) {
@@ -238,42 +239,48 @@ public class TextView implements iView {
         {
             MovieSet movieSet = (MovieSet) location;
             Card card = movieSet.getCard();
-
-            System.out.println("    Scene #" + card.getSceneNum() + ": \"" + card.getName() + "\"");
-            System.out.println("    Shots: " + movieSet.getShotCounter() + "/" + movieSet.getShots());
-            System.out.println("    Budget: $" + card.getBudget() + ",000,000");
-            System.out.println("    Description: " + card.getDescription());
-            System.out.println("    Parts:");
-            Part[] roles = card.getRoles();
-            for (int i = 0; i < roles.length; ++i)
+            if (card == null)
             {
-                System.out.println("        \"" + roles[i].getName() + "\" (" + roles[i].getRank() + "):");
-                System.out.println("            \"" + roles[i].getLine() + "\"");
-                if (roles[i].inUse())
-                {
-                    System.out.println("            Taken");
-                }
-                else
-                {
-                    System.out.println("            Free");
-                }
+                System.out.println("    (Scene Finish)");
             }
-
-            System.out.println("    Extras:");
-            Part[] extras = ((MovieSet) location).getExtras();
-            for (int i = 0; i < extras.length; ++i)
+            else
             {
-                System.out.println("        \"" + extras[i].getName() + "\" (" + extras[i].getRank() + "):");
-                System.out.println("            \"" + extras[i].getLine() + "\"");
-                if (extras[i].inUse())
-                {
-                    System.out.println("            Taken");
-                }
-                else
-                {
-                    System.out.println("            Free");
-                }
+                System.out.println("    Scene #" + card.getSceneNum() + ": \"" + card.getName() + "\"");
+                System.out.println("    Shots: " + movieSet.getShotCounter() + "/" + movieSet.getShots());
+                System.out.println("    Budget: $" + card.getBudget() + ",000,000");
+                System.out.println("    Description: " + card.getDescription());
+                System.out.println("    Parts:");
+                Part[] roles = card.getRoles();
 
+                for (int i = 0; i < roles.length; ++i)
+                {
+                    System.out.println("        \"" + roles[i].getName() + "\" (" + roles[i].getRank() + "):");
+                    System.out.println("            \"" + roles[i].getLine() + "\"");
+                    if (roles[i].inUse())
+                    {
+                        System.out.println("            Taken");
+                    }
+                    else
+                    {
+                        System.out.println("            Free");
+                    }
+                }
+                System.out.println("    Extras:");
+                Part[] extras = ((MovieSet) location).getExtras();
+
+                for (int i = 0; i < extras.length; ++i)
+                {
+                    System.out.println("        \"" + extras[i].getName() + "\" (" + extras[i].getRank() + "):");
+                    System.out.println("            \"" + extras[i].getLine() + "\"");
+                    if (extras[i].inUse())
+                    {
+                        System.out.println("            Taken");
+                    }
+                    else
+                    {
+                        System.out.println("            Free");
+                    }
+                }
             }
         }
         else if (location instanceof CastingOffice)
@@ -315,19 +322,26 @@ public class TextView implements iView {
         System.console().readLine();
     }
 
-    public void displaySceneWrap(ArrayList<Player> onCardPlayers, ArrayList<Player> offCardPlayers, int[] offCardPayouts, int[] onCardPayouts)
+    public void displaySceneWrap(ArrayList<Player> onCardPlayers, ArrayList<Player> offCardPlayers, int[] onCardPayouts, int[] offCardPayouts)
     {
-        System.out.println("\n    Payouts:\n    Parts:");
-        for (int i = 0; i < onCardPlayers.size(); ++i)
+        System.out.println("\n    Payouts:");
+        if (onCardPlayers.size() > 0)
         {
-            Player player = onCardPlayers.get(i);
-            System.out.println("        \"" + player.getName() + "\": " + onCardPayouts[i] + " dollars.");
+            System.out.println("    Parts:");
+            for (int i = 0; i < onCardPlayers.size(); ++i)
+            {
+                Player player = onCardPlayers.get(i);
+                System.out.println("        \"" + player.getName() + "\": " + onCardPayouts[i] + " dollars.");
+            }
         }
-        System.out.println("    Extras:");
-        for (int i = 0; i < offCardPlayers.size(); ++i)
+        if (offCardPlayers.size() > 0)
         {
-            Player player = offCardPlayers.get(i);
-            System.out.println("        \"" + player.getName() + "\": " + offCardPayouts[i] + " dollars.");
+            System.out.println("    Extras:");
+            for (int i = 0; i < offCardPlayers.size(); ++i)
+            {
+                Player player = offCardPlayers.get(i);
+                System.out.println("        \"" + player.getName() + "\": " + offCardPayouts[i] + " dollars.");
+            }
         }
         System.out.println("\nPress enter to continue:");
     }

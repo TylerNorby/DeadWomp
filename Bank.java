@@ -28,6 +28,8 @@ public class Bank {
         int[] diceRolls = new int[budget];
         int[] onCardPayouts = new int[onCardPlayers.size()];
         int[] offCardPayouts = new int[extraPlayers.size()];
+        System.out.println(onCardPayouts.length);
+        System.out.println(offCardPayouts.length);
 
         Random random = new Random();
         for (int i = 0; i < budget; i++) {
@@ -37,6 +39,14 @@ public class Bank {
 
         // On card player bonus
         int j = 0;
+        for (int i = 0; i < onCardPayouts.length; ++i)
+        {
+            onCardPayouts[i] = 0;
+        }
+        for (int i = 0; i < offCardPayouts.length; ++i)
+        {
+            offCardPayouts[i] = 0;
+        }
         if (onCardPlayers.size() > 0)
         {
             for (int i = 0; i < diceRolls.length; ++i) {
@@ -55,8 +65,6 @@ public class Bank {
             extraPlayers.get(i).addMoney(extraPlayers.get(i).getRank());
         }
         view.displaySceneWrap(onCardPlayers, extraPlayers, onCardPayouts, offCardPayouts);
-
-
     }
 
     /**

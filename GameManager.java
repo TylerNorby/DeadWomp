@@ -156,6 +156,7 @@ class GameManager {
                 currentMovieSet = (MovieSet) gameBoard.getLocation(player.getLocation());
                 Part playerRole = currentMovieSet.getRole(player.getRole());
                 boolean success = validation.validateAct(player.getLocation(), player.rollDice() + player.getChips());
+                boolean onCard = playerRole.onCard();
 
                 if (success)
                 {
@@ -166,7 +167,7 @@ class GameManager {
                         sceneWrap(currentMovieSet);
                     }
                 }
-                bank.turnPayout(player, success, playerRole.onCard());
+                bank.turnPayout(player, success, onCard);
                 break;
 
             case Rehearse:
