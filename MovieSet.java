@@ -30,6 +30,19 @@ public class MovieSet extends Location {
         }
     }
 
+    public Part getRole(String roleName) {
+        Part role = null;
+        if (this.card != null) {
+            role = this.card.getRole(roleName);
+        }
+
+        if (role == null && this.extraMap.containsKey(roleName)) {
+            role = this.extraMap.get(roleName);
+        }
+
+        return role;
+    }
+
     /**
      * Determines if a players acting roll was successful
      *
@@ -66,6 +79,19 @@ public class MovieSet extends Location {
             return false;
         }
         return true;
+    }
+
+    public void freeAllRoles() {
+        if (this.card != null) {
+            for (Part role : this.card.getRoles()) {
+                role.inUse = false; 
+            }
+        }
+        if (this.extras != null) {
+            for (Part extra : this.extras) {
+                extra.inUse = false; 
+            }
+        }
     }
 
     public boolean isExtra(String name) {

@@ -1,10 +1,11 @@
+
 import java.util.ArrayList;
 
-class ValidationManager
-{
+class ValidationManager {
+
     private GameBoard gameBoard;
-    public ValidationManager(GameBoard gameBoard)
-    {
+
+    public ValidationManager(GameBoard gameBoard) {
         this.gameBoard = gameBoard;
     }
 
@@ -45,9 +46,7 @@ class ValidationManager
             } else {
                 return (player.getCredits() >= CastingOffice.getMoneyCost(desiredRank) && CastingOffice.getMoneyCost(desiredRank) != -1);
             }
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
@@ -60,41 +59,34 @@ class ValidationManager
      * @return
      */
     public boolean validateAct(Player player, int rollAmount) {
-        // this will always be a movieSet if everything is implemented correctly
-        MovieSet set = (MovieSet) gameBoard.getLocation(player.getLocation());
-
-        if (set.actingSuccess(rollAmount)) {
-
+        Location location = gameBoard.getLocation(player.getLocation());
+        if (location instanceof MovieSet) {
+            MovieSet set = (MovieSet) location;
+            return set.actingSuccess(rollAmount + player.getChips());
         }
         return false;
     }
 
     /**
      * Get list of possible actions given player can take
+     *
      * @param player
      * @return
      */
-    public ArrayList<Action> getPossibleActions(Player player)
-    {
+    public ArrayList<Action> getPossibleActions(Player player) {
         ArrayList<Action> possibleActions = new ArrayList<Action>();
         possibleActions.add(Action.View);
-        if(player.role == null)
-        {
+        if (player.role == null) {
             possibleActions.add(Action.Move);
-            if(gameBoard.getLocation(player.getLocation()) instanceof MovieSet)
-            {
+            if (gameBoard.getLocation(player.getLocation()) instanceof MovieSet) {
                 possibleActions.add(Action.TakeRole);
             }
-            if (player.getLocation().equals("office"))
-            {
+            if (player.getLocation().equals("office")) {
                 possibleActions.add(Action.Upgrade);
             }
-        }
-        else
-        {
+        } else {
             possibleActions.add(Action.Act);
-            if (player.getChips() < 6)
-            {
+            if (player.getChips() < 6) {
                 possibleActions.add(Action.Rehearse);
             }
         }

@@ -18,11 +18,13 @@ class GameManager {
     GameBoard gameBoard;
     ValidationManager validation;
     iView view;
+    Bank bank;
 
     public GameManager() {
         gameBoard = new GameBoard();
         validation = new ValidationManager(gameBoard);
         view = new TextView(); //only textview for now
+        bank = new Bank();
 
         int playerCount = view.inputPlayerCount();
 
@@ -86,6 +88,7 @@ class GameManager {
         view.displayBoard(gameBoard, player, players);
         Action playerAction = view.inputAction(possibleActions);
         String[] validLocations;
+        Location currentLocation = gameBoard.getLocation(player.getLocation());
         switch (playerAction) {
             case Move:
                 validLocations = gameBoard.getLocation(player.getLocation()).getConnections();
@@ -101,9 +104,44 @@ class GameManager {
                 takeTurn(player, possibleActions);
                 break;
             case Act:
-                validation.validateAct(player, player.rollDice());
-                //display outcome, reward
-                break;
+                currentLocation = gameBoard.getLocation(player.getLocation());
+                if (currentLocation instanceof MovieSet) {
+                    MovieSet currentMovieSet = (MovieSet) currentLocation;
+                    int rollAmount = player.rollDice();
+                    System.out.println(player.getName() + " rolled a " + rollAmount);
+
+                    Part playerRole = currentMovieSet.getRole(player.getRole());
+
+                    boolean success = validation.validateAct(player, rollAmount);
+
+                    if (success) {
+                        System.out.println("Success! " + player.getName() + " acted successfully.");
+                        // Decrease the shot counter on the movie set
+                        currentMovieSet.removeShot();
+
+                        if (playerRole != null && playerRole.onCard()) {
+                            bank.givePayout(player, 2);
+                        } else {
+                            System.out.println(player.getName() + " does not earn money");
+                        }
+
+                        if (currentMovieSet.getShotCounter() <= 0) {
+                            System.out.println("Scene wraps at " + currentMovieSet.getName() + "!");
+                            bank.calculateSceneWrapPayouts(currentMovieSet, players);
+                            currentMovieSet.freeAllRoles();
+                        }
+
+                    } else {
+                        System.out.println("Failure. " + player.getName() + " failed to act.");
+                        if (playerRole != null && !playerRole.onCard()) {
+                            bank.givePayout(player, 1);
+                        } else {
+                            System.out.println(player.getName() + "does not earn money for failing.");
+                        }
+                    }
+                    break;
+                }
+
             case Rehearse:
                 int currentChips = player.getChips();
                 if (currentChips < 6) {
@@ -117,7 +155,6 @@ class GameManager {
                 //display upgrade list, get input
                 break;
             case TakeRole:
-                Location currentLocation = gameBoard.getLocation(player.getLocation());
                 if (currentLocation instanceof MovieSet) {
                     MovieSet currentMovieSet = (MovieSet) currentLocation;
                     List<Part> availableRoles = new ArrayList<>();
