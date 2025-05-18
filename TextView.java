@@ -76,6 +76,7 @@ public class TextView implements iView {
         System.out.println("Locations: ");
         Location[] locations = gameBoard.getLocations();
         String[] playerLocations = new String[players.length];
+        int indent = 40;
 
         for (int i = 0; i < playerLocations.length; ++i)
         {
@@ -84,20 +85,31 @@ public class TextView implements iView {
 
         for (Location location : locations)
         {
+            int lineLen = 0;
             System.out.print(location.getName());
+            lineLen += location.getName().length();
             if (location instanceof MovieSet)
             {
                 MovieSet movieSet = (MovieSet) location;
                 if (movieSet.getCard() == null)
                 {
-                    System.out.print(" (Finished)");
+                    String line = " (Finished)";
+                    lineLen += line.length();
+                    System.out.print(line);
                 }
                 else
                 {
-                    System.out.print(" ($" + movieSet.getCard().getBudget() + ",000,000) (" + movieSet.getShotCounter() + "/" + movieSet.getShots() + ")");
+                    String line = " ($" + movieSet.getCard().getBudget() + ",000,000) (" + movieSet.getShotCounter() + "/" + movieSet.getShots() + ")";
+                    lineLen += line.length();
+                    System.out.print(line);
                 }
             }
-            System.out.print(":     ->     ");
+            System.out.print(": ");
+            for (int i = lineLen; i < indent; ++i)
+            {
+                System.out.print(" ");
+            }
+            System.out.print(" --->     ");
             String[] neighbors = location.getConnections();
 
             int i;
