@@ -37,7 +37,7 @@ public class Part {
     {
         return inUse;
     }
-    Boolean onCard()
+    boolean onCard()
     {
         return onCard;
     }

@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,6 +82,34 @@ class GameManager {
             }
         }
     }
+    
+    /**
+     * Iterate through players, if same location, then check if on/off card, add to corresponding array, call bank payout method
+     * @param setLocation
+     */
+    private void scenePayout (String location)
+    {
+        ArrayList<Player> onCardPlayers = new ArrayList<Player>();
+        ArrayList<Player> extraPlayers = new ArrayList<Player>();
+        MovieSet currentSet = (MovieSet) gameBoard.getLocation(location);
+        
+        for (Player player : players)
+        {
+            if (player.getLocation() == location)
+            {
+                boolean onCard = currentSet.getRole(player.getRole()).onCard();
+                if (onCard)
+                {
+                    onCardPlayers.add(player);
+                }
+                else
+                {
+                    extraPlayers.add(player);
+                }
+            }
+        }
+        bank.sceneWrapPayouts(currentSet.getCard().getBudget(), onCardPlayers, extraPlayers);
+    }
 
     private void takeTurn(Player player, ArrayList<Action> possibleActions) {
         view.displayBoard(gameBoard, player, players);
@@ -105,50 +132,28 @@ class GameManager {
                 break;
             case Act:
                 currentLocation = gameBoard.getLocation(player.getLocation());
-                if (currentLocation instanceof MovieSet) {
-                    MovieSet currentMovieSet = (MovieSet) currentLocation;
-                    int rollAmount = player.rollDice();
-                    System.out.println(player.getName() + " rolled a " + rollAmount);
+                MovieSet currentMovieSet = (MovieSet) currentLocation;
+                int rollAmount = player.rollDice();
+                Part playerRole = currentMovieSet.getRole(player.getRole());
+                boolean success = validation.validateAct(player);
 
-                    Part playerRole = currentMovieSet.getRole(player.getRole());
+                if (success)
+                {
+                    currentMovieSet.removeShot();
+                    bank.turnPayout(player, validation.validateAct(player), playerRole.onCard());
 
-                    boolean success = validation.validateAct(player, rollAmount);
-
-                    if (success) {
-                        System.out.println("Success! " + player.getName() + " acted successfully.");
-                        // Decrease the shot counter on the movie set
-                        currentMovieSet.removeShot();
-
-                        if (playerRole != null && playerRole.onCard()) {
-                            bank.givePayout(player, 2);
-                        } else {
-                            System.out.println(player.getName() + " does not earn money");
-                        }
-
-                        if (currentMovieSet.getShotCounter() <= 0) {
-                            System.out.println("Scene wraps at " + currentMovieSet.getName() + "!");
-                            bank.calculateSceneWrapPayouts(currentMovieSet, players);
-                            currentMovieSet.freeAllRoles();
-                        }
-
-                    } else {
-                        System.out.println("Failure. " + player.getName() + " failed to act.");
-                        if (playerRole != null && !playerRole.onCard()) {
-                            bank.givePayout(player, 1);
-                        } else {
-                            System.out.println(player.getName() + "does not earn money for failing.");
-                        }
+                    if (currentMovieSet.getShotCounter() == 0)
+                    {
+                        scenePayout(player.getLocation());
                     }
-                    break;
                 }
+                bank.turnPayout(player, success, playerRole.onCard()); 
+                break;
 
             case Rehearse:
                 int currentChips = player.getChips();
                 if (currentChips < 6) {
                     player.setChips(currentChips + 1);
-                    System.out.println(player.getName() + " rehearsed. They now have " + player.getChips() + " practice chips.");
-                } else {
-                    System.out.println("You are at maximum rehearsals!");
                 }
                 break;
             case Upgrade:
@@ -156,7 +161,7 @@ class GameManager {
                 break;
             case TakeRole:
                 if (currentLocation instanceof MovieSet) {
-                    MovieSet currentMovieSet = (MovieSet) currentLocation;
+                    currentMovieSet = (MovieSet) currentLocation;
                     List<Part> availableRoles = new ArrayList<>();
 
                     // Add available on-card roles

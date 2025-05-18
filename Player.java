@@ -35,6 +35,7 @@ public class Player {
     public void setRole(String role) {this.role = role;}
     public void setRank(int rank) {this.rank = rank;}
     public void addMoney(int amt){this.money += amt;}
+    public void addCredits(int amt){this.credits+= amt;}
     public void removeMoney(int amt){this.money -= amt;}
     public void setChips(int chips){this.practiceChips = chips;}
 }

@@ -30,6 +30,16 @@ class ValidationManager {
     }
 
     /**
+     * Roll dice, calculate whether player succeeds, return if successful
+     * @param player
+     * @return
+     */
+    public boolean validateAct(Player player)
+    {
+        return ((MovieSet) gameBoard.getLocation(player.getLocation())).actingSuccess(player.rollDice());
+    }
+
+    /**
      * Validates whether player can upgrade to given rank using credits or
      * dollars
      *
@@ -49,22 +59,6 @@ class ValidationManager {
         } else {
             return false;
         }
-    }
-
-    /**
-     * Validates whether player can act, then sends info to bank for payouts
-     *
-     * @param player
-     * @param rollAmount
-     * @return
-     */
-    public boolean validateAct(Player player, int rollAmount) {
-        Location location = gameBoard.getLocation(player.getLocation());
-        if (location instanceof MovieSet) {
-            MovieSet set = (MovieSet) location;
-            return set.actingSuccess(rollAmount + player.getChips());
-        }
-        return false;
     }
 
     /**

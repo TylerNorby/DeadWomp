@@ -109,12 +109,13 @@ public class TextView implements iView {
                     String role = players[i].getRole();
                     if (role == null)
                     {
-                        System.out.print(" (No Role)\n");
+                        System.out.print(" (No Role): ");
                     }
                     else
                     {
-                        System.out.print(" (Actor: " + role + ")\n");
+                        System.out.print(" (Actor: " + role + "): ");
                     }
+                    System.out.print("Dollars: " + players[i].getMoney() + ", Credits: " + players[i].getCredits() + ", Practice Chips: " + players[i].getChips() + "\n");
                 }
             }
         }
