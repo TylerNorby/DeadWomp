@@ -21,23 +21,27 @@ public class Part {
         inUse = false; 
 }
 
-    String getName()
+    public String getName()
     {
         return name;
     }
-    String getLine()
+    public String getLine()
     {
         return line;
     }
-    int getRank()
+    public int getRank()
     {
         return rank;
     }
-    boolean inUse()
+    public boolean inUse()
     {
         return inUse;
     }
-    boolean onCard()
+    public void take()
+    {
+        inUse = true;
+    }
+    public boolean onCard()
     {
         return onCard;
     }

@@ -34,15 +34,18 @@ public class Bank {
 
         // On card player bonus
         int j = 0;
-        for (int i = 0; i < diceRolls.length; ++i) {
-            if (j == onCardPlayers.size())
-            {
-                j = 0;
+        if (onCardPlayers.size() > 0)
+        {
+            for (int i = 0; i < diceRolls.length; ++i) {
+                if (j == onCardPlayers.size())
+                {
+                    j = 0;
+                }
+                Player player = onCardPlayers.get(j);
+                int payout = diceRolls[i];
+                player.addMoney(payout);
+                ++j;
             }
-            Player player = onCardPlayers.get(j);
-            int payout = diceRolls[i];
-            player.addMoney(payout);
-            ++j;
         }
         for (Player player : extraPlayers) {
             player.addMoney(player.getRank());

@@ -77,6 +77,10 @@ class GameManager {
         scenePayout(movieSet.getName());
         movieSet.setCard(null); 
         gameBoard.removeScene();
+        for (Player player : players)
+        {
+            player.setRole(null);
+        }
         if (gameBoard.getScenes() == 0)
         {
             setupDay();
@@ -204,12 +208,14 @@ class GameManager {
                 view.displayRoles(availableRoles, unavailableRoles);
                 String chosenRoleName = view.inputRoleChoice(availableRoles); //view class and availableRoles ensure only valid options may be returned
 
-                if (chosenRoleName == "q") {
+                if (chosenRoleName == "q")
+                {
                     takeTurn (player, possibleActions); 
                 }
-                else
+                else 
                 {
                     player.setRole(chosenRoleName);
+                    currentMovieSet.getRole(chosenRoleName).take(); 
                 }
                 break;
             case View:

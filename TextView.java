@@ -88,7 +88,7 @@ public class TextView implements iView {
             if (location instanceof MovieSet)
             {
                 MovieSet movieSet = (MovieSet) location;
-                System.out.print(" (" + movieSet.getShotCounter() + "/" + movieSet.getShots() + ")");
+                System.out.print(" ($" + movieSet.getCard().getBudget() + ",000,000) (" + movieSet.getShotCounter() + "/" + movieSet.getShots() + ")");
             }
             System.out.print(":     ->     ");
             String[] neighbors = location.getConnections();
@@ -194,7 +194,7 @@ public class TextView implements iView {
         if (availableRoles == null || availableRoles.isEmpty()) {
             System.out.println("\nNo roles available for your rank. (Press Enter to continue):\n");
             System.console().readLine();
-            return null; 
+            return "q"; 
         }
 
         int choice = -1;
