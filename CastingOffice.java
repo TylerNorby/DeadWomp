@@ -35,7 +35,7 @@ public class CastingOffice extends Location {
      */
     public int getMoneyCost(int rank) {
         if (rank >= 2 && rank <= 6) {
-            return moneyCost[rank - 1]; // Adjust for 0-based index
+            return moneyCost[rank - 2]; // Adjust for 0-based index
         }
         return -1;
     }
@@ -49,7 +49,7 @@ public class CastingOffice extends Location {
      */
     public int getCreditCost(int rank) {
         if (rank >= 2 && rank <= 6) {
-            return creditCost[rank - 1]; // Adjust for 0-based index
+            return creditCost[rank - 2]; // Adjust for 0-based index
         }
         return -1;
     }

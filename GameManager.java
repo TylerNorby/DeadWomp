@@ -136,7 +136,7 @@ class GameManager {
     }
 
     private void takeTurn(Player player, ArrayList<Action> possibleActions) {
-        view.displayBoard(gameBoard, player, players);
+        view.displayBoard(day, totalDays, gameBoard, player, players);
         Action playerAction = view.inputAction(possibleActions);
         String[] validLocations;
         Location currentLocation = gameBoard.getLocation(player.getLocation());
@@ -265,7 +265,7 @@ class GameManager {
         for (int i = 0; i < players.length; i++) {
             playerScores[i] = players[i].getMoney() + players[i].getCredits() + (players[i].getRank() * 5);
         }
-        //pass playerscores off to view
+        view.displayScores(players, playerScores);
     }
 
     public static void main(String args[]) {

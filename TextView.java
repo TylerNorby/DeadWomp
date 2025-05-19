@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class TextView implements iView {
@@ -72,8 +73,8 @@ public class TextView implements iView {
     /**
      * Display each location, show players in locations, highlight active player
      */
-    public void displayBoard(GameBoard gameBoard, Player activePlayer, Player[] players) {
-        System.out.println("Board: ");
+    public void displayBoard(int day, int totalDays, GameBoard gameBoard, Player activePlayer, Player[] players) {
+        System.out.println("Day: " + day + "/" + totalDays);
         Location[] locations = gameBoard.getLocations();
         String[] playerLocations = new String[players.length];
         int indent = 40;
@@ -423,8 +424,8 @@ public class TextView implements iView {
                     boolean enoughMoney = moneyCost[i] <= player.getMoney();
                     boolean enoughCredits = creditCost[i] <= player.getCredits();
                     System.out.println("Pay with:");
-                    System.out.println("1. Credits");
-                    System.out.println("2. Money");
+                    System.out.println("1. Money");
+                    System.out.println("2. Credits");
                     System.out.print("Enter choice (q to cancel): ");
                     input = System.console().readLine();
 
@@ -433,7 +434,7 @@ public class TextView implements iView {
                         int payment = Integer.parseInt(input);
                         if (payment == 1)
                         {
-                            if (enoughCredits)
+                            if (enoughMoney)
                             {
                                 System.out.println("\nSuccessfully upgraded rank to: " + choice);
                                 System.out.print("\nPress enter to continue:\n");
@@ -442,13 +443,13 @@ public class TextView implements iView {
                             }
                             else
                             {
-                                System.out.println("Not enough credits.");
+                                System.out.println("\nNot enough money.");
                                 return inputUpgrade(player, moneyCost, creditCost);
                             }
                         }
                         else if (payment == 2)
                         {
-                            if (enoughMoney)
+                            if (enoughCredits)
                             {
                                 System.out.println("\nSuccessfully upgraded rank to: " + choice);
                                 System.out.print("\nPress enter to continue:\n");
@@ -457,7 +458,7 @@ public class TextView implements iView {
                             }
                             else
                             {
-                                System.out.println("Not enough money.");
+                                System.out.println("\nNot enough credits.");
                                 return inputUpgrade(player, moneyCost, creditCost);
                             }
                         }
@@ -496,5 +497,17 @@ public class TextView implements iView {
             return new int[] {0, player.getRank()};
         }
         return new int[] {0, player.getRank()};
+    }
+
+    public void displayScores(Player[] players, int[] playerScores) {
+        int len = players.length;
+
+        System.out.println("\nFinal Scores: \n");
+        for (int i = 0; i < len; ++i)
+        {
+            System.out.println(players[i].getName() + ": " + playerScores[i]);
+        }
+        System.out.println("\nEnter to exit:\n");
+        System.console().readLine();
     }
 }

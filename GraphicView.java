@@ -51,7 +51,7 @@ public class GraphicView implements iView{
     }
 
     @Override
-    public void displayBoard(GameBoard gameBoard, Player activePlayer, Player[] activePlayers) {
+    public void displayBoard(int day, int totalDays, GameBoard gameBoard, Player activePlayer, Player[] activePlayers) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'displayBoard'");
     }
@@ -76,7 +76,7 @@ public class GraphicView implements iView{
     }
 
     @Override
-    public int inputUpgrade(Player player, int[] moneyCost, int[] creditCost) {
+    public int[] inputUpgrade(Player player, int[] moneyCost, int[] creditCost) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'inputRank'");
     }
