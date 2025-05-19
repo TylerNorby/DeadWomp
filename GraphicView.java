@@ -80,4 +80,10 @@ public class GraphicView implements iView{
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'inputRank'");
     }
+
+    @Override
+    public void displayScores(Player[] players, int[] playerScores) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'displayScores'");
+    }
 }

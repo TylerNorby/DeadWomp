@@ -101,6 +101,7 @@ class GameManager {
                 }
             }
         }
+        calculateScore();
     }
     
     /**

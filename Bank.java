@@ -1,6 +1,7 @@
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Random;
 
 /**
@@ -28,6 +29,8 @@ public class Bank {
         int[] diceRolls = new int[budget];
         int[] onCardPayouts = new int[onCardPlayers.size()];
         int[] offCardPayouts = new int[extraPlayers.size()];
+
+        onCardPlayers.sort(Comparator.comparingInt(Player::getRank).reversed()); //sort descending rank order for payout
 
         Random random = new Random();
         for (int i = 0; i < budget; i++) {

@@ -81,19 +81,6 @@ public class MovieSet extends Location {
         return true;
     }
 
-    public void freeAllRoles() {
-        if (this.card != null) {
-            for (Part role : this.card.getRoles()) {
-                role.inUse = false; 
-            }
-        }
-        if (this.extras != null) {
-            for (Part extra : this.extras) {
-                extra.inUse = false; 
-            }
-        }
-    }
-
     public boolean isExtra(String name) {
         Part role = extraMap.get(name);
         return role != null;
