@@ -174,16 +174,16 @@ public class ParseXML {
             {
                 
                 String neighbor = neighborList.item(i).getNodeName();
-                neighbors[j] = neighbor.substring(0,1).toUpperCase() + neighbor.substring(1,neighbor.length()); 
+                neighbors[j] = neighbor;
             }
             else
             {
                 String neighbor = neighborList.item(i).getAttributes().getNamedItem("name").getNodeValue();
-                neighbors[j] = neighbor.substring(0,1) + neighbor.substring(1,neighbor.length());
+                neighbors[j] = neighbor;
             }
             ++j;
         }
-        return new Location(name.substring(0,1).toUpperCase() + name.substring(1,name.length()), neighbors);
+        return new Location(name, neighbors);
     }  
 
     private CastingOffice getCastingOffice(Node node)
@@ -203,12 +203,12 @@ public class ParseXML {
             {
                 
                 String neighbor = neighborList.item(i).getNodeName();
-                neighbors[j] = neighbor.substring(0,1).toUpperCase() + neighbor.substring(1,neighbor.length()); 
+                neighbors[j] = neighbor; 
             }
             else
             {
                 String neighbor = neighborList.item(i).getAttributes().getNamedItem("name").getNodeValue();
-                neighbors[j] = neighbor.substring(0,1) + neighbor.substring(1,neighbor.length());
+                neighbors[j] = neighbor;
             }
             ++j;
         }
@@ -231,7 +231,7 @@ public class ParseXML {
                 creditCost[level-2] = amt;
             }
         }
-        return new CastingOffice(name.substring(0,1).toUpperCase() + name.substring(1,name.length()), neighbors, moneyCost, creditCost);
+        return new CastingOffice(name, neighbors, moneyCost, creditCost);
     }
 
 }

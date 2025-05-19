@@ -65,10 +65,11 @@ class GameManager {
      * Reset shot counters, move players to trailer, redistribute scene cards
      */
     private void setupDay() {
-        gameBoard.nextDay();
+        ++day;
+        gameBoard.setupDay();
         for (Player player : players)
         {
-            player.setLocation("Trailer");
+            player.setLocation("trailer");
         }
     }
 
@@ -79,11 +80,11 @@ class GameManager {
         gameBoard.removeScene();
         for (Player player : players)
         {
-            player.setRole(null);
-        }
-        if (gameBoard.getScenes() == 0)
-        {
-            setupDay();
+            if (player.getLocation().equals(movieSet.getName()))
+            {
+                player.setRole(null);
+                player.setChips(0);
+            }
         }
     }
 
@@ -91,7 +92,7 @@ class GameManager {
      * Main game loop
      */
     public void playGame() {
-        while (day < totalDays) {
+        while (day <= totalDays) {
             setupDay();
             while (gameBoard.getScenes() > 0) {
                 for (Player player : players) {
@@ -116,14 +117,18 @@ class GameManager {
         {
             if (player.getLocation().equals(location))
             {
-                boolean onCard = currentSet.getRole(player.getRole()).onCard();
-                if (onCard)
+                Part playerPart = currentSet.getRole(player.getRole());
+                if (playerPart != null)
                 {
-                    onCardPlayers.add(player);
-                }
-                else
-                {
-                    extraPlayers.add(player);
+                    boolean onCard = playerPart.onCard();
+                    if (onCard)
+                    {
+                        onCardPlayers.add(player);
+                    }
+                    else
+                    {
+                        extraPlayers.add(player);
+                    }
                 }
             }
         }
@@ -178,6 +183,20 @@ class GameManager {
                 break;
 
             case Upgrade:
+                CastingOffice office = (CastingOffice) currentLocation; 
+                int[] creditCost = office.getCreditCost();
+                int[] moneyCost = office.getMoneyCost();
+                int rank[] = view.inputUpgrade(player, moneyCost, creditCost); //array of payment type and rank to change to. payment type of "0" means no change in rank
+                if (rank[0] == 1)
+                {
+                    player.removeMoney(office.getMoneyCost(rank[1]));
+                }
+                else if (rank[0] == 2)
+                {
+                    player.removeCredits(office.getCreditCost(rank[1]));
+                }
+                player.setRank(rank[1]);
+
                 break;
 
             case TakeRole:

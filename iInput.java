@@ -7,4 +7,5 @@ public interface iInput
     public Action inputAction(ArrayList<Action> validActions); 
     public String inputLocation(String[] validLocations);
     public String inputRoleChoice(List<Part> availableRoles);
+    public int[] inputUpgrade(Player player, int[] moneyCost, int[] creditCost);
 }

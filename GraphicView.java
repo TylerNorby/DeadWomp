@@ -74,4 +74,10 @@ public class GraphicView implements iView{
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'displaySceneWrap'");
     }
+
+    @Override
+    public int inputUpgrade(Player player, int[] moneyCost, int[] creditCost) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'inputRank'");
+    }
 }

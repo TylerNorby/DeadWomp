@@ -85,7 +85,7 @@ public class GameBoard {
      * @param location
      * @param scene
      */
-    public void nextDay() {
+    public void setupDay() {
         for (Location location : locations)
         {
             if (location instanceof MovieSet)

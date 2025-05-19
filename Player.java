@@ -15,7 +15,7 @@ public class Player {
         this.rank = rank;
         this.money = 0;
         this.credits = credits;
-        this.location = "Trailer";
+        this.location = "trailer";
     }
 
     public int rollDice()
@@ -37,5 +37,6 @@ public class Player {
     public void addMoney(int amt){this.money += amt;}
     public void addCredits(int amt){this.credits+= amt;}
     public void removeMoney(int amt){this.money -= amt;}
+    public void removeCredits(int amt){this.credits -= amt;}
     public void setChips(int chips){this.practiceChips = chips;}
 }

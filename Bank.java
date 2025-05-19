@@ -28,8 +28,6 @@ public class Bank {
         int[] diceRolls = new int[budget];
         int[] onCardPayouts = new int[onCardPlayers.size()];
         int[] offCardPayouts = new int[extraPlayers.size()];
-        System.out.println(onCardPayouts.length);
-        System.out.println(offCardPayouts.length);
 
         Random random = new Random();
         for (int i = 0; i < budget; i++) {

@@ -73,7 +73,7 @@ public class TextView implements iView {
      * Display each location, show players in locations, highlight active player
      */
     public void displayBoard(GameBoard gameBoard, Player activePlayer, Player[] players) {
-        System.out.println("Locations: ");
+        System.out.println("Board: ");
         Location[] locations = gameBoard.getLocations();
         String[] playerLocations = new String[players.length];
         int indent = 40;
@@ -86,14 +86,14 @@ public class TextView implements iView {
         for (Location location : locations)
         {
             int lineLen = 0;
-            System.out.print(location.getName());
+            System.out.print(location.getName().substring(0,1).toUpperCase() + location.getName().substring(1,location.getName().length()));
             lineLen += location.getName().length();
             if (location instanceof MovieSet)
             {
                 MovieSet movieSet = (MovieSet) location;
                 if (movieSet.getCard() == null)
                 {
-                    String line = " (Finished)";
+                    String line = "     (Scene finished)";
                     lineLen += line.length();
                     System.out.print(line);
                 }
@@ -125,12 +125,14 @@ public class TextView implements iView {
                 {
                     if (players[i] == activePlayer)
                     {
-                        System.out.print("    [" + players[i].getName() + "]");
+                        System.out.print("--> [" + players[i].getName() + "]");
                     }
                     else
                     {
-                        System.out.print("    " + players[i].getName());
+                        System.out.print("     " + players[i].getName());
                     }
+                    System.out.print(" (" + players[i].getRank() + ")");
+
                     String role = players[i].getRole();
                     if (role == null)
                     {
@@ -228,7 +230,7 @@ public class TextView implements iView {
             }
             else if (input.trim().equals("q"))
             {
-                return null;
+                return "q";
             }
 
             try {
@@ -244,9 +246,12 @@ public class TextView implements iView {
         }
     }
 
+    /**
+     * Display location info and Scene info (if applicable).
+     */
     public void displayLocation(GameBoard gameBoard, String locationName) {
         Location location = gameBoard.getLocation(locationName); 
-        System.out.println("\n" + location.getName() + ": ");
+        System.out.println("\n" + location.getName().substring(0,1).toUpperCase() + location.getName().substring(1,location.getName().length()) + ": ");
         if (location instanceof MovieSet)
         {
             MovieSet movieSet = (MovieSet) location;
@@ -311,7 +316,9 @@ public class TextView implements iView {
         System.console().readLine();
     }
 
-    @Override
+    /**
+     * Display acting outcome
+     */
     public void displayAct(boolean success, int money, int credits) {
         System.out.println("\nActing: ");
         if (success)
@@ -334,8 +341,12 @@ public class TextView implements iView {
         System.console().readLine();
     }
 
+    /**
+     * Display scene wrap payouts
+     */
     public void displaySceneWrap(ArrayList<Player> onCardPlayers, ArrayList<Player> offCardPlayers, int[] onCardPayouts, int[] offCardPayouts)
     {
+        System.out.println("\nScene Wrap:");
         System.out.println("\n    Payouts:");
         if (onCardPlayers.size() > 0)
         {
@@ -356,5 +367,134 @@ public class TextView implements iView {
             }
         }
         System.out.println("\nPress enter to continue:");
+        System.console().readLine();
+    }
+
+    /**
+     * Get array of payment type and destination rank as return value. 0 as payment type means no change in rank.
+     */
+    public int[] inputUpgrade(Player player, int[] moneyCost, int[] creditCost) {
+        System.out.println("\nRanks:");
+        ArrayList<Integer> availableRanks = new ArrayList<Integer>();
+        for (int i = 0; i < moneyCost.length; ++i) //Print ranks, add to list if player can afford, array starts at rank 2
+        {
+            System.out.print("    ");
+            boolean enoughMoney = moneyCost[i] <= player.getMoney();
+            boolean enoughCredits = creditCost[i] <= player.getCredits();
+            boolean rankAvailable = enoughMoney || enoughCredits && player.getRank() + 2 < i + 2; 
+
+            if (rankAvailable)
+            {
+                availableRanks.add(i);
+            }
+
+            System.out.print(i + 2);
+            System.out.print(": ");
+            System.out.print(moneyCost[i] + " dollars / " + creditCost[i] + " credits\n");
+        }
+
+        if (availableRanks.size() > 0)
+        {
+            System.out.println("\nAvailable Ranks: ");
+            for (int i = 0; i < availableRanks.size(); ++i) //list available ranks
+            {
+                System.out.print((availableRanks.get(i) + 2));
+                System.out.print(": " + moneyCost[availableRanks.get(i)] + " dollars / " + creditCost[availableRanks.get(i)] + " credits\n");
+            }
+            System.out.println("\nCurrency:\nMoney: " + player.getMoney() + " dollars / " + player.getCredits() + " credits.");
+            System.out.print("\nEnter rank number to upgrade to (q to cancel):\n");
+            String input = System.console().readLine();
+
+            try
+            {
+                int choice = Integer.parseInt(input);
+                int i = 0; 
+                while (i < availableRanks.size() && !(availableRanks.get(i) == choice - 2)) //check if selection is an available rank
+                {
+                    ++i;
+                }
+                if (i == availableRanks.size())
+                {
+                    System.out.println("Not valid rank. ");
+                    return inputUpgrade(player, moneyCost, creditCost);
+                }
+                else
+                {
+                    boolean enoughMoney = moneyCost[i] <= player.getMoney();
+                    boolean enoughCredits = creditCost[i] <= player.getCredits();
+                    System.out.println("Pay with:");
+                    System.out.println("1. Credits");
+                    System.out.println("2. Money");
+                    System.out.print("Enter choice (q to cancel): ");
+                    input = System.console().readLine();
+
+                    try
+                    {
+                        int payment = Integer.parseInt(input);
+                        if (payment == 1)
+                        {
+                            if (enoughCredits)
+                            {
+                                System.out.println("\nSuccessfully upgraded rank to: " + choice);
+                                System.out.print("\nPress enter to continue:\n");
+                                System.console().readLine();
+                                return new int[] {1, choice};
+                            }
+                            else
+                            {
+                                System.out.println("Not enough credits.");
+                                return inputUpgrade(player, moneyCost, creditCost);
+                            }
+                        }
+                        else if (payment == 2)
+                        {
+                            if (enoughMoney)
+                            {
+                                System.out.println("\nSuccessfully upgraded rank to: " + choice);
+                                System.out.print("\nPress enter to continue:\n");
+                                System.console().readLine();
+                                return new int[] {2, choice};
+                            }
+                            else
+                            {
+                                System.out.println("Not enough money.");
+                                return inputUpgrade(player, moneyCost, creditCost);
+                            }
+                        }
+
+                    }
+                    catch (NumberFormatException e)
+                    {
+                        if (input.trim().equals("q"))
+                        {
+                            return inputUpgrade(player, moneyCost, creditCost); 
+                        }
+                        else
+                        {
+                            System.out.println("Invalid input: please enter a number.");
+                        }
+                    }
+                }
+            }
+            catch (NumberFormatException e)
+            {
+                if (input.trim().equals("q"))
+                {
+                    return new int[]{0, player.getRank()};
+                }
+                else
+                {
+                    System.out.println("Invalid input: please enter a number.");
+                    return inputUpgrade(player, moneyCost, creditCost);
+                }
+            }
+        }
+        else
+        {
+            System.out.println("\nNo available ranks.\nPress enter to continue:");
+            System.console().readLine();
+            return new int[] {0, player.getRank()};
+        }
+        return new int[] {0, player.getRank()};
     }
 }
