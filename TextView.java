@@ -373,129 +373,116 @@ public class TextView implements iView {
     /**
      * Get array of payment type and destination rank as return value. 0 as payment type means no change in rank.
      */
-    public int[] inputUpgrade(Player player, int[] moneyCost, int[] creditCost) {
-        System.out.println("\nRanks:");
-        ArrayList<Integer> availableRanks = new ArrayList<Integer>();
-        for (int i = 0; i < moneyCost.length; ++i) //Print ranks, add to list if player can afford, array starts at rank 2
+    public int[] inputUpgrade(boolean[][] availableRanks)
+    {
+        System.out.println("\nAvailable Ranks:");
+        for (int i = 0; i < availableRanks.length; ++i) //Print available ranks, and valid purchase method
         {
-            System.out.print("    ");
-            boolean enoughMoney = moneyCost[i] <= player.getMoney();
-            boolean enoughCredits = creditCost[i] <= player.getCredits();
-            boolean rankAvailable = enoughMoney || enoughCredits && player.getRank() + 2 < i + 2; 
-
-            if (rankAvailable)
+            System.out.print("    " + (i+2) + ": ");
+            if (availableRanks[i][0])
             {
-                availableRanks.add(i);
+                System.out.print("(Money) ");
             }
-
-            System.out.print(i + 2);
-            System.out.print(": ");
-            System.out.print(moneyCost[i] + " dollars / " + creditCost[i] + " credits\n");
+            if (availableRanks[i][1])
+            {
+                System.out.print("(Credits)");
+            }
+            if (!availableRanks[i][0] && !availableRanks[i][1])
+            {
+                System.out.print("(Unavailable)");
+            }
+            System.out.println();
         }
 
-        if (availableRanks.size() > 0)
+        System.out.print("\nEnter rank selection (q to cancel): ");
+        String input = System.console().readLine();
+        
+        try
         {
-            System.out.println("\nAvailable Ranks: ");
-            for (int i = 0; i < availableRanks.size(); ++i) //list available ranks
+            int rankNum = Integer.parseInt(input);
+            if (rankNum < 2 || rankNum > 6)
             {
-                System.out.print((availableRanks.get(i) + 2));
-                System.out.print(": " + moneyCost[availableRanks.get(i)] + " dollars / " + creditCost[availableRanks.get(i)] + " credits\n");
+                System.out.println("\nInvalid input: Rank out of bounds.");
+                return inputUpgrade(availableRanks);
             }
-            System.out.println("\nCurrency:\nMoney: " + player.getMoney() + " dollars / " + player.getCredits() + " credits.");
-            System.out.print("\nEnter rank number to upgrade to (q to cancel):\n");
-            String input = System.console().readLine();
-
-            try
+            else
             {
-                int choice = Integer.parseInt(input);
-                int i = 0; 
-                while (i < availableRanks.size() && !(availableRanks.get(i) == choice - 2)) //check if selection is an available rank
+                if (availableRanks[rankNum-2][0] || availableRanks[rankNum-2][1])
                 {
-                    ++i;
-                }
-                if (i == availableRanks.size())
-                {
-                    System.out.println("Not valid rank. ");
-                    return inputUpgrade(player, moneyCost, creditCost);
+                    int[] choice = new int[] {enterPaymentType(new boolean[] {availableRanks[rankNum-2][0], availableRanks[rankNum-2][1]}), rankNum};
+                    return choice;
                 }
                 else
                 {
-                    boolean enoughMoney = moneyCost[i] <= player.getMoney();
-                    boolean enoughCredits = creditCost[i] <= player.getCredits();
-                    System.out.println("Pay with:");
-                    System.out.println("1. Money");
-                    System.out.println("2. Credits");
-                    System.out.print("Enter choice (q to cancel): ");
-                    input = System.console().readLine();
-
-                    try
-                    {
-                        int payment = Integer.parseInt(input);
-                        if (payment == 1)
-                        {
-                            if (enoughMoney)
-                            {
-                                System.out.println("\nSuccessfully upgraded rank to: " + choice);
-                                System.out.print("\nPress enter to continue:\n");
-                                System.console().readLine();
-                                return new int[] {1, choice};
-                            }
-                            else
-                            {
-                                System.out.println("\nNot enough money.");
-                                return inputUpgrade(player, moneyCost, creditCost);
-                            }
-                        }
-                        else if (payment == 2)
-                        {
-                            if (enoughCredits)
-                            {
-                                System.out.println("\nSuccessfully upgraded rank to: " + choice);
-                                System.out.print("\nPress enter to continue:\n");
-                                System.console().readLine();
-                                return new int[] {2, choice};
-                            }
-                            else
-                            {
-                                System.out.println("\nNot enough credits.");
-                                return inputUpgrade(player, moneyCost, creditCost);
-                            }
-                        }
-
-                    }
-                    catch (NumberFormatException e)
-                    {
-                        if (input.trim().equals("q"))
-                        {
-                            return inputUpgrade(player, moneyCost, creditCost); 
-                        }
-                        else
-                        {
-                            System.out.println("Invalid input: please enter a number.");
-                        }
-                    }
+                    System.out.println("\nInvalid input: Rank not available.");
+                    return inputUpgrade(availableRanks);
                 }
             }
-            catch (NumberFormatException e)
+        }
+        catch (NumberFormatException e)
+        {
+            if (input.trim().equals("q"))
             {
-                if (input.trim().equals("q"))
+                return new int[] {0, 0};
+            }
+            else
+            {
+                System.out.println("\nInvalid input: Not number.");
+                return inputUpgrade(availableRanks);
+            }
+        }
+
+    }
+
+    /**
+     * Helper method for payment type input for rank input. 0 is no payment, 1 is money, 2 is credits.
+     * @param paymentTypes valid payment types
+     * @return
+     */
+    private int enterPaymentType(boolean[] paymentTypes)
+    {
+        System.out.println("\nPayment types: ");
+        if (paymentTypes[0])
+        {
+            System.out.println("    1: Money");
+        }
+        if (paymentTypes[1])
+        {
+            System.out.println("    2: Credits");
+        }
+        System.out.print("\nEnter payment type (q to cancel): ");
+        String input = System.console().readLine();
+
+        try
+        {
+            int type = Integer.parseInt(input);
+            if (type < 1 || type > 2)
+            {
+                System.out.println("\nInvalid selection: Type out of bounds.");
+                return enterPaymentType(paymentTypes);
+            }
+            else
+            {
+                if (paymentTypes[type-1])
                 {
-                    return new int[]{0, player.getRank()};
+                    return type;
                 }
                 else
                 {
-                    System.out.println("Invalid input: please enter a number.");
-                    return inputUpgrade(player, moneyCost, creditCost);
+                    System.out.println("\n Invalid selection: Invalid payment type.");
+                    return enterPaymentType(paymentTypes);
                 }
             }
-        }
-        else
+       }
+        catch (NumberFormatException e)
         {
-            System.out.println("\nNo available ranks.\nPress enter to continue:");
-            System.console().readLine();
-            return new int[] {0, player.getRank()};
+            if (input.trim().equals("q"))
+            {
+                return 0;
+            }
+            System.out.println("\nInvalid selection: Not number.");
+            return enterPaymentType(paymentTypes);
         }
-        return new int[] {0, player.getRank()};
     }
 
     public void displayScores(Player[] players, int[] playerScores) {

@@ -76,7 +76,8 @@ public class GraphicView implements iView{
     }
 
     @Override
-    public int[] inputUpgrade(Player player, int[] moneyCost, int[] creditCost) {
+    public int[] inputUpgrade(boolean[][] availableRanks)
+    {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'inputRank'");
     }

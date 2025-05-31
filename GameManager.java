@@ -187,17 +187,23 @@ class GameManager {
                 CastingOffice office = (CastingOffice) currentLocation; 
                 int[] creditCost = office.getCreditCost();
                 int[] moneyCost = office.getMoneyCost();
-                int rank[] = view.inputUpgrade(player, moneyCost, creditCost); //array of payment type and rank to change to. payment type of "0" means no change in rank
+                boolean[][] availableRanks = bank.getAvailableRanks(player, moneyCost, creditCost);
+                int rank[] = view.inputUpgrade(availableRanks); //array of payment type and rank to change to. payment type of "0" means no change in rank
+
                 if (rank[0] == 1)
                 {
                     player.removeMoney(office.getMoneyCost(rank[1]));
+                    player.setRank(rank[1]);
                 }
                 else if (rank[0] == 2)
                 {
                     player.removeCredits(office.getCreditCost(rank[1]));
+                    player.setRank(rank[1]);
                 }
-                player.setRank(rank[1]);
-
+                else
+                {
+                    takeTurn(player, possibleActions);
+                }
                 break;
 
             case TakeRole:

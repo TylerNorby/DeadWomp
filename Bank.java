@@ -100,4 +100,35 @@ public class Bank {
         player.addCredits(credits);
         player.addMoney(money);
     }
+
+    /**
+     * Return 2d array of available ranks for player's current currency.
+     * 1st index is rank number (starting at 2), 1st index of 2nd index is available with money, 2nd index of 2nd index is available with credits.
+     * @param player
+     * @param moneyCost
+     * @param creditCost
+     * @return
+     */
+    public boolean[][] getAvailableRanks (Player player, int[] moneyCost, int[] creditCost)
+    {
+        boolean [][] availableRanks = new boolean[5][2];
+
+        for (int i = 0; i < 5; ++i)
+        {
+            boolean[] cost = new boolean[] {false, false};
+            if (player.getRank() <= i + 2)
+            {
+                if (player.getMoney() >= moneyCost[i])
+                {
+                    cost[0] = true;
+                }
+                if (player.getCredits() >= creditCost[i])
+                {
+                    cost[1] = true;
+                }
+            }
+            availableRanks[i] = cost; 
+        }
+        return availableRanks;
+    }
 }
