@@ -72,6 +72,7 @@ class ValidationManager {
         ArrayList<Action> possibleActions = new ArrayList<Action>();
         Location location = gameBoard.getLocation(player.getLocation());
         possibleActions.add(Action.View);
+        possibleActions.add(Action.Nothing);
         if (player.role == null) 
         {
             possibleActions.add(Action.Move);

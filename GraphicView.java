@@ -1,42 +1,89 @@
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.LayoutManager;
 import java.awt.Panel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Flow;
+import java.util.function.Function;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-public class GraphicView extends JFrame implements iView {
+public class GraphicView extends JFrame implements iView{
     private GameBoard gameBoard;
     private JFrame mainFrame;
-    private JLabel board;
+    private JLayeredPane board;
+    private Panel actionPanel;
+    Action currentAction;
+    Thread inputThread;
+
+    /**
+     * Listener for button inputs
+     */
+    private class Listener implements ActionListener
+    {
+        private GraphicView parent;
+        public void actionPerformed(ActionEvent e)
+        {
+            currentAction = Action.valueOf(((JButton) e.getSource()).getText());
+            parent.actionPerformed();
+        }
+        Listener(GraphicView parent)
+        {
+            this.parent = parent;
+        }
+    }
+
+    public synchronized void actionPerformed()
+    {
+        this.notify();
+    }
 
     public GraphicView(GameBoard gameBoard) {
         super("Deadwood");
         this.gameBoard = gameBoard;
+        Listener listener = new Listener(this);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        ImageIcon boardIcon = new ImageIcon("board.jpg");
-        board = new JLabel(boardIcon);
-        board.setSize(1200, 900);
-        Panel actions = new Panel(new GridLayout(5, 2)); //actions added at each turn depending on available action
+        board = new JLayeredPane();
+        add(board);
+        JLabel boardIcon = new JLabel(new ImageIcon("board.jpg"));
+        boardIcon.setSize(1600,900);
+        board.add(boardIcon, 0);
+        board.setLayout(new FlowLayout());
+        actionPanel = new Panel(new GridLayout(5, 2)); //actions added at each turn depending on available action
+
+        Action[] actions = Action.class.getEnumConstants();
+        for (Action action: actions)
+        {
+            if (action != action.View)
+            {
+                JButton button = new JButton(action.toString());
+                button.addActionListener(listener);
+                actionPanel.add(button);
+            }
+        }
+        
 
         setLayout(new BorderLayout());
         getContentPane().add(board, BorderLayout.CENTER);
-        getContentPane().add(actions, BorderLayout.EAST);
+        getContentPane().add(actionPanel, BorderLayout.EAST);
         setSize(1920, 1080);
-        setVisible(true);
         pack();
+        setVisible(true);
     }
 
     public void displayBoard() {
@@ -94,19 +141,29 @@ public class GraphicView extends JFrame implements iView {
 
     // This method is complete
     public Action inputAction(ArrayList<Action> validActions) {
-        Object[] options = validActions.toArray();
-        int choice = JOptionPane.showOptionDialog(
-                this,
-                "Choose an action:",
-                "Action Selection",
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[0]);
-        if (choice >= 0)
-            return validActions.get(choice);
-        throw new UnsupportedOperationException("Action selection cancelled");
+        Component[] components = actionPanel.getComponents();
+        for (Component component : components)
+        {
+            JButton button = (JButton) component;
+            if (validActions.contains(Action.valueOf(button.getText())))
+            {
+                button.setEnabled(true);
+            }
+            else
+            {
+                button.setEnabled(false);
+            }
+        }
+
+        synchronized (this) //wait until button is pressed
+        {
+            try {
+                this.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return currentAction;
     }
 
     // Implemntation not complete, review validLocations array
@@ -126,131 +183,11 @@ public class GraphicView extends JFrame implements iView {
         throw new UnsupportedOperationException("Unimplemented method 'inputRoleChoice'");
     }
 
-    @Override
     public void displayBoard(int day, int totalDays, GameBoard gameBoard, Player activePlayer, Player[] players) {
-        JFrame frame = new JFrame("DeadWood Game Board");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
-        frame.add(new JLabel("Welcome to DeadWood!"));
-        frame.setLocationRelativeTo(null); // Center the window
-        frame.setVisible(true);
-        System.out.println("Day: " + day + "/" + totalDays);
-        Location[] locations = gameBoard.getLocations();
-        String[] playerLocations = new String[players.length];
-        int indent = 40;
-
-        for (int i = 0; i < playerLocations.length; ++i) {
-            playerLocations[i] = players[i].getLocation();
-        }
-
-        for (Location location : locations) {
-            int lineLen = 0;
-            System.out.print(location.getName().substring(0, 1).toUpperCase()
-                    + location.getName().substring(1, location.getName().length()));
-            lineLen += location.getName().length();
-            if (location instanceof MovieSet) {
-                MovieSet movieSet = (MovieSet) location;
-                if (movieSet.getCard() == null) {
-                    String line = "     (Scene finished)";
-                    lineLen += line.length();
-                    System.out.print(line);
-                } else {
-                    String line = " ($" + movieSet.getCard().getBudget() + ",000,000) (" + movieSet.getShotCounter()
-                            + "/" + movieSet.getShots() + ")";
-                    lineLen += line.length();
-                    System.out.print(line);
-                }
-            }
-            System.out.print(": ");
-            for (int i = lineLen; i < indent; ++i) {
-                System.out.print(" ");
-            }
-            System.out.print(" --->     ");
-            String[] neighbors = location.getConnections();
-
-            int i;
-            for (i = 0; i < neighbors.length - 1; ++i) {
-                System.out.print(neighbors[i].substring(0, 1).toUpperCase()
-                        + neighbors[i].substring(1, neighbors[i].length()) + ", ");
-            }
-            System.out.print(neighbors[i].substring(0, 1).toUpperCase()
-                    + neighbors[i].substring(1, neighbors[i].length()) + "\n");
-
-            for (i = 0; i < playerLocations.length; ++i) {
-                if (playerLocations[i].equals(location.getName())) {
-                    if (players[i] == activePlayer) {
-                        System.out.print("--> [" + players[i].getName() + "]");
-                    } else {
-                        System.out.print("     " + players[i].getName());
-                    }
-                    System.out.print(" (" + players[i].getRank() + ")");
-
-                    String role = players[i].getRole();
-                    if (role == null) {
-                        System.out.print(" (No Role): ");
-                    } else {
-                        System.out.print(" (Actor: " + role + "): ");
-                    }
-                    System.out.print("Dollars: " + players[i].getMoney() + ", Credits: " + players[i].getCredits()
-                            + ", Practice Chips: " + players[i].getChips() + "\n");
-                }
-            }
-        }
+        //update game state display, update board, update player display
     }
 
-    @Override
     public void displayLocation(GameBoard gameBoard, String locationName) {
-        Location location = gameBoard.getLocation(locationName);
-        System.out.println("\n" + location.getName().substring(0, 1).toUpperCase()
-                + location.getName().substring(1, location.getName().length()) + ": ");
-        if (location instanceof MovieSet) {
-            MovieSet movieSet = (MovieSet) location;
-            Card card = movieSet.getCard();
-            if (card == null) {
-                System.out.println("    (Scene Finish)");
-            } else {
-                System.out.println("    Scene #" + card.getSceneNum() + ": \"" + card.getName() + "\"");
-                System.out.println("    Shots: " + movieSet.getShotCounter() + "/" + movieSet.getShots());
-                System.out.println("    Budget: $" + card.getBudget() + ",000,000");
-                System.out.println("    Description: " + card.getDescription());
-                System.out.println("    Parts:");
-                Part[] roles = card.getRoles();
-
-                for (int i = 0; i < roles.length; ++i) {
-                    System.out.println("        \"" + roles[i].getName() + "\" (" + roles[i].getRank() + "):");
-                    System.out.println("            \"" + roles[i].getLine() + "\"");
-                    if (roles[i].inUse()) {
-                        System.out.println("            Taken");
-                    } else {
-                        System.out.println("            Free");
-                    }
-                }
-                System.out.println("    Extras:");
-                Part[] extras = ((MovieSet) location).getExtras();
-
-                for (int i = 0; i < extras.length; ++i) {
-                    System.out.println("        \"" + extras[i].getName() + "\" (" + extras[i].getRank() + "):");
-                    System.out.println("            \"" + extras[i].getLine() + "\"");
-                    if (extras[i].inUse()) {
-                        System.out.println("            Taken");
-                    } else {
-                        System.out.println("            Free");
-                    }
-                }
-            }
-        } else if (location instanceof CastingOffice) {
-            System.out.println("    Upgrades: ");
-            CastingOffice castingOffice = (CastingOffice) location;
-            int[] moneyCost = castingOffice.getMoneyCost();
-            int[] creditCost = castingOffice.getCreditCost();
-
-            for (int i = 0; i < moneyCost.length; ++i) {
-                System.out.println(
-                        "        Rank " + (i + 2) + ": " + moneyCost[i] + " dollars / " + creditCost[i] + " credits");
-            }
-        }
-        System.out.println("Press enter to continue.");
-        System.console().readLine();
     }
 
 
@@ -300,4 +237,5 @@ public class GraphicView extends JFrame implements iView {
         message.append("\nPress OK to exit.\n");
         JOptionPane.showMessageDialog(mainFrame, message.toString(), "Final Scores", JOptionPane.INFORMATION_MESSAGE);
     }
+
 }
