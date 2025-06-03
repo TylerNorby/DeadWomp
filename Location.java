@@ -1,11 +1,13 @@
 public class Location {
     String name;
     String[] connections;
+    int[] area;
 
-    public Location(String name, String[] connections)
+    public Location(String name, int[] area, String[] connections)
     {
         this.name = name;
         this.connections = connections;
+        this.area = area;
     }
     public String[] getConnections()
     {

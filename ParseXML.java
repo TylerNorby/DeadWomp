@@ -104,10 +104,11 @@ public class ParseXML {
         for (int i = 0; i < partList.getLength(); i+=1)
         {
             Node part = partList.item(i);
+            int[] area = getArea(part);
             String partName = part.getAttributes().getNamedItem("name").getNodeValue();
             int rank = Integer.parseInt(part.getAttributes().getNamedItem("level").getNodeValue());
             String line = part.getChildNodes().item(3).getTextContent();
-            parts[j] = new Part(partName, line, rank, true);
+            parts[j] = new Part(partName, area, line, rank, true);
             ++j;
         }
         return new Card(name, sceneNum, budget, desc, parts);
@@ -145,11 +146,13 @@ public class ParseXML {
             String roleName = attributes.getNamedItem("name").getNodeValue();
             int rank = Integer.parseInt(attributes.getNamedItem("level").getNodeValue());
             String line = ((Element) roleList.item(i)).getElementsByTagName("line").item(0).getTextContent();
-            Part role = new Part(roleName, line, rank, false);
+            int[] area = getArea(roleList.item(i));
+            Part role = new Part(roleName, area, line, rank, false);
             roles[j] = role;
             ++j;
         }
-        return new MovieSet(name, neighbors, shots, roles);
+        int[] area = getArea(node);
+        return new MovieSet(name, neighbors, area, shots, roles);
     }
 
     /**
@@ -183,7 +186,8 @@ public class ParseXML {
             }
             ++j;
         }
-        return new Location(name, neighbors);
+        int[] area = getArea(node);
+        return new Location(name, area, neighbors);
     }  
 
     private CastingOffice getCastingOffice(Node node)
@@ -231,7 +235,19 @@ public class ParseXML {
                 creditCost[level-2] = amt;
             }
         }
-        return new CastingOffice(name, neighbors, moneyCost, creditCost);
+
+        return new CastingOffice(name, getArea(node), neighbors, moneyCost, creditCost);
+    }
+
+    private int[] getArea(Node node)
+    {
+        NamedNodeMap areaNode = ((Element) node).getElementsByTagName("area").item(0).getAttributes();
+        int[] area = new int[4];
+        area[0] = Integer.valueOf(areaNode.getNamedItem("x").getNodeValue());
+        area[1] = Integer.valueOf(areaNode.getNamedItem("y").getNodeValue());
+        area[2] = Integer.valueOf(areaNode.getNamedItem("h").getNodeValue());
+        area[3] = Integer.valueOf(areaNode.getNamedItem("h").getNodeValue());
+        return area;
     }
 
 }

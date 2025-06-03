@@ -1,4 +1,5 @@
 
+import java.awt.geom.Area;
 import java.util.HashMap;
 
 /**
@@ -17,8 +18,8 @@ public class MovieSet extends Location {
     int shotCounter;
     int cardNum;
 
-    public MovieSet(String name, String[] connections, int shots, Part[] extras) {
-        super(name, connections);
+    public MovieSet(String name, String[] connections, int[] area, int shots, Part[] extras) {
+        super(name, area, connections);
         this.shots = shots;
         this.extras = extras;
         this.extraMap = new HashMap<>();

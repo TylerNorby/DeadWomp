@@ -47,6 +47,9 @@ public class GraphicView extends JFrame implements iView{
         }
     }
 
+    /**
+     * Unpause obj thread when button input received.
+     */
     public synchronized void actionPerformed()
     {
         this.notify();

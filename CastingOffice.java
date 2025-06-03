@@ -1,3 +1,4 @@
+import java.awt.geom.Area;
 
 /**
  * This static class contains the upgrade information related to the Casting office location in the game of deadwood. It also returns the
@@ -11,8 +12,8 @@ public class CastingOffice extends Location {
     private int moneyCost[];
     private int creditCost[];
 
-    public CastingOffice(String name, String[] connections, int[] moneyCost, int[] creditCost) {
-        super(name, connections);
+    public CastingOffice(String name, int[] area, String[] connections, int[] moneyCost, int[] creditCost) {
+        super(name, area, connections);
         this.moneyCost = moneyCost;
         this.creditCost = creditCost;
     }
