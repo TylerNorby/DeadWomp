@@ -22,7 +22,7 @@ class GameManager {
     public GameManager() {
         gameBoard = new GameBoard();
         validation = new ValidationManager(gameBoard);
-        view = new GraphicView(gameBoard); //only textview for now
+        view = new GraphicView(gameBoard); 
         bank = new Bank(view);
 
         int playerCount = view.inputPlayerCount();
@@ -94,11 +94,17 @@ class GameManager {
     public void playGame() {
         while (day <= totalDays) {
             setupDay();
+            int playerNum = 0;
+            int playerCount = players.length;
+
             while (gameBoard.getScenes() > 0) {
-                for (Player player : players) {
-                    ArrayList<Action> possibleActions = validation.getPossibleActions(player);
-                    takeTurn(player, possibleActions);
+                if (playerNum == playerCount) {
+                    playerNum = 0;
                 }
+                Player player = players[playerNum];
+                ArrayList<Action> possibleActions = validation.getPossibleActions(player);
+                takeTurn(player, possibleActions);
+                ++playerNum;
             }
         }
         calculateScore();

@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public interface iView extends iInput{
+public interface iView extends iInput {
     public void displayBoard(int day, int totalDays, GameBoard gameBoard, Player activePlayer, Player[] players);
     public void displayRoles(List<Part> availableRoles, List<Part> unavailableRoles);
     public void displayLocation(GameBoard gameBoard, String locationName);

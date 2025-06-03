@@ -1,80 +1,102 @@
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.Label;
+import java.awt.LayoutManager;
+import java.awt.Panel;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-public class GraphicView implements iView {
-    GameBoard gameBoard;
+public class GraphicView extends JFrame implements iView {
+    private GameBoard gameBoard;
     private JFrame mainFrame;
+    private JLabel board;
 
     public GraphicView(GameBoard gameBoard) {
+        super("Deadwood");
         this.gameBoard = gameBoard;
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        ImageIcon boardIcon = new ImageIcon("board.jpg");
+        board = new JLabel(boardIcon);
+        board.setSize(1200, 900);
+        Panel actions = new Panel(new GridLayout(5, 2)); //actions added at each turn depending on available action
+
+        setLayout(new BorderLayout());
+        getContentPane().add(board, BorderLayout.CENTER);
+        getContentPane().add(actions, BorderLayout.EAST);
+        setSize(1920, 1080);
+        setVisible(true);
+        pack();
     }
 
     public void displayBoard() {
-        if (mainFrame == null) {
-            mainFrame = new JFrame("DeadWood Game Board");
-            mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            mainFrame.setSize(800, 600);
-            mainFrame.add(new JLabel("Welcome to DeadWood!"));
-            mainFrame.setLocationRelativeTo(null); // Center the window
-            mainFrame.setVisible(true);
-        } else {
-            mainFrame.setVisible(true);
-            mainFrame.toFront();
-        }
     }
 
-    // This method is complete
-    @Override
     public int inputPlayerCount() {
         while (true) {
-            String input = JOptionPane.showInputDialog(mainFrame, "Enter number of players (2-8):", "Player Count",
-                    JOptionPane.QUESTION_MESSAGE);
+            String input = JOptionPane.showInputDialog(this, "Enter number of players (2-8):", "Player Count", JOptionPane.QUESTION_MESSAGE);
             if (input == null)
-                throw new UnsupportedOperationException("Cancelled by user");
+            {
+                dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+            }
             try {
                 int count = Integer.parseInt(input);
                 if (count >= 2 && count <= 8)
+                {
                     return count;
-            } catch (NumberFormatException ignored) {
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog((JFrame) this, "Please enter a valid number between 2 and 8.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog((JFrame) this, "Please enter a valid number between 2 and 8.", "Invalid Input",
+                JOptionPane.ERROR_MESSAGE);
             }
-            JOptionPane.showMessageDialog(mainFrame, "Please enter a valid number between 2 and 8.", "Invalid Input",
-                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    // This method is complete
-    @Override
     public String[] inputNames(int playerCount) {
         String[] names = new String[playerCount];
 
         for (int i = 0; i < playerCount; ++i) {
-            String input = JOptionPane.showInputDialog(mainFrame, "Enter player " + (i + 1) + "'s name:",
-                    "Player names",
-                    JOptionPane.QUESTION_MESSAGE);
-            if (input == null)
-                throw new UnsupportedOperationException("Cancelled by user");
-            if (input.trim().isEmpty()) { // Prevents empty names
-                JOptionPane.showMessageDialog(mainFrame, "Name cannot be empty. Please enter a valid name.",
-                        "Invalid Input",
-                        JOptionPane.ERROR_MESSAGE);
-                i--; // decrement i to retry this player
-                continue;
+            boolean validInput = false;
+            while (!validInput)
+            {
+                String input = JOptionPane.showInputDialog(this, "Enter Player " + (i + 1) + "'s name:", "Player names", JOptionPane.QUESTION_MESSAGE);
+                if (input == null) 
+                {
+                    dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+                } 
+                else if (input.trim().isEmpty()) 
+                {
+                    JOptionPane.showMessageDialog(this, "Name cannot be empty. Please enter a valid name.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                }
+                else
+                {
+                    names[i] = input;
+                    validInput = true;
+                }
             }
-            names[i] = input;
         }
         return names;
     }
 
     // This method is complete
-    @Override
     public Action inputAction(ArrayList<Action> validActions) {
         Object[] options = validActions.toArray();
         int choice = JOptionPane.showOptionDialog(
-                mainFrame,
+                this,
                 "Choose an action:",
                 "Action Selection",
                 JOptionPane.DEFAULT_OPTION,
@@ -88,20 +110,17 @@ public class GraphicView implements iView {
     }
 
     // Implemntation not complete, review validLocations array
-    @Override
     public String inputLocation(String[] validLocations) {
         String input = (String) JOptionPane.showInputDialog(mainFrame, "Choose a location:", "Location Dropdown",
                 JOptionPane.QUESTION_MESSAGE, null, validLocations, validLocations[0]);
         return input; // null if cancelled
     }
 
-    @Override
     public void displayRoles(List<Part> availableRoles, List<Part> unavailableRoles) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'displayAvailableRoles'");
     }
 
-    @Override
     public String inputRoleChoice(List<Part> availableRoles) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'inputRoleChoice'");
@@ -262,7 +281,6 @@ public class GraphicView implements iView {
         throw new UnsupportedOperationException("Unimplemented method 'displaySceneWrap'");
     }
 
-    @Override
     public int[] inputUpgrade(boolean[][] availableRanks)
     {
         // TODO Auto-generated method stub
