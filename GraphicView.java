@@ -196,7 +196,10 @@ public class GraphicView extends JFrame implements iView{
     }
 
     public String inputLocation(String[] validLocations) {
-        rightPanel.remove(actionPanel);
+        if (rightPanel.getComponents().length == 2)
+        {
+            rightPanel.remove(1);
+        }
         Panel locationPanel = new Panel(new GridLayout(0, 3));
         Listener listener = new Listener(this);
 
@@ -241,13 +244,49 @@ public class GraphicView extends JFrame implements iView{
     }
 
     public void displayRoles(List<Part> availableRoles, List<Part> unavailableRoles) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'displayAvailableRoles'");
     }
 
     public String inputRoleChoice(List<Part> availableRoles) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'inputRoleChoice'");
+        if (rightPanel.getComponents().length == 2)
+        {
+            rightPanel.remove(1);
+        }
+        Panel rolePanel = new Panel(new GridLayout(0, 1));
+        Listener listener = new Listener(this);
+
+        for (Part part: availableRoles)
+        {
+            String name = part.getName();
+            JButton button = new JButton(name);
+            button.setPreferredSize(new Dimension(450, 50));
+            button.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+            button.addActionListener(listener);
+            rolePanel.add(button);
+        }
+        JButton button = new JButton("Cancel");
+        button.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+        button.addActionListener(listener);
+        rolePanel.add(button);
+        rightPanel.add(rolePanel);
+        pack();
+
+        synchronized(this)
+        {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        rightPanel.remove(rolePanel);
+        if (currentAction == "Cancel")
+        {
+            return "q";
+        }
+        else
+        {
+            return currentAction;
+        }
     }
 
     public void displayBoard(int day, int totalDays, GameBoard gameBoard, Player activePlayer, Player[] players) {
