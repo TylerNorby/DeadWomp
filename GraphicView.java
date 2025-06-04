@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -35,6 +36,9 @@ public class GraphicView extends JFrame implements iView{
     private JPanel rightPanel;
     private ImageIcon[][] playerIcons;
     private ImageIcon[] dice;
+    private HashMap<String, ImageIcon> cards;
+    private ImageIcon cardBack;
+    private ImageIcon sceneCounter;
     String currentAction; //current button input
     Thread inputThread;
 
@@ -85,6 +89,17 @@ public class GraphicView extends JFrame implements iView{
             dice[i] = new ImageIcon("Dice/w" + i + ".png");
         }
     }
+
+    private void generateCards()
+    {
+        cards = new HashMap<String, ImageIcon>();
+        for (int i = 1; i < 41; ++i)
+        {
+            cards.put(i + ".png", new ImageIcon("Cards/" + i + ".png"));
+        }
+        sceneCounter = new ImageIcon("shot.png");
+        cardBack = new ImageIcon("cardBack.png");
+    }
     
     public GraphicView(){
         super("Deadwood");
@@ -92,11 +107,12 @@ public class GraphicView extends JFrame implements iView{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         board = new JLayeredPane(); //board components 
-        add(board);
+        board.setLayout(null);
+        board.setPreferredSize(new Dimension(1200,900));
         JLabel boardIcon = new JLabel(new ImageIcon("board.jpg"));
-        boardIcon.setSize(1200,900);
+        boardIcon.setSize(1200, 900);
         board.add(boardIcon, 0);
-        board.setLayout(new FlowLayout());
+        add(board);
 
         leftPanel = new JPanel(new GridLayout(8, 1)); //player panel
         TitledBorder playerTitle = BorderFactory.createTitledBorder("Players");
@@ -134,6 +150,7 @@ public class GraphicView extends JFrame implements iView{
 
         generatePlayerIcons();
         generateDice();
+        generateCards();
         
         setLayout(new BorderLayout());
         getContentPane().add(board, BorderLayout.CENTER);
@@ -338,7 +355,8 @@ public class GraphicView extends JFrame implements iView{
         }
     }
 
-    public void displayBoard(int day, int totalDays, GameBoard gameBoard, Player activePlayer, Player[] players) {
+    private void displayPlayers(Player activePlayer, Player[] players)
+    {
         leftPanel.removeAll();
         for (int i = 0; i < players.length; ++i)
         {
@@ -353,7 +371,7 @@ public class GraphicView extends JFrame implements iView{
             String roleText = players[i].getRole();
             if (roleText == null)
             {
-                roleText = "No Role.";
+                roleText = "No Role";
             }
             JLabel role = new JLabel(roleText);
             role.setFont(new Font("Times New Roman", Font.PLAIN, FONT_SIZE));
@@ -379,11 +397,42 @@ public class GraphicView extends JFrame implements iView{
             playerPanel.add(player, BorderLayout.CENTER);
             leftPanel.add(playerPanel);
         }
-
         leftPanel.validate();
         leftPanel.repaint();
-        pack();
+    }
+    public void displayBoard(int day, int totalDays, GameBoard gameBoard, Player activePlayer, Player[] players) {
+        displayPlayers(activePlayer, players);
+
         //update game state display, update board, update player display
+        Location[] locations = gameBoard.getLocations();
+        for (Location location: locations)
+        {
+            JPanel locationPanel = new JPanel();
+            int[] area = location.getArea();
+            locationPanel.setBounds(area[0], area[1], area[2], area[3]);
+
+            if (location instanceof MovieSet)
+            {
+                MovieSet movieSet = (MovieSet) location;
+                Card card = movieSet.getCard();
+
+                ImageIcon cardIcon;
+                if(card.isFlipped())
+                {
+                    cardIcon = cards.get(card.getImage());
+                }
+                else
+                {
+                    cardIcon = cardBack;
+                }
+                JLabel cardLabel = new JLabel(cardIcon);
+                cardLabel.setBounds(area[0], area[1], 205,115);
+                cardLabel.setSize(205,115);
+                locationPanel.add(cardLabel);
+            }
+            board.add(locationPanel, 2);
+        }
+        pack();
     }
 
     public void displayLocation(GameBoard gameBoard, String locationName) {
@@ -391,23 +440,8 @@ public class GraphicView extends JFrame implements iView{
 
 
     //method is complete
-    @Override
     public void displayAct(boolean success, int roll, int money, int credits) {
-        StringBuilder message = new StringBuilder();
-        message.append("Acting:\n");
-        if (success) {
-            message.append("    Success!\n");
-        } else {
-            message.append("    Failure.\n");
-        }
-        if (money != 0) {
-            message.append("    ").append(money).append(" dollars.\n");
-        }
-        if (credits != 0) {
-            message.append("    ").append(credits).append(" credits.\n");
-        }
-        message.append("\nPress OK to continue.");
-        JOptionPane.showMessageDialog(mainFrame, message.toString(), "Act Result", JOptionPane.INFORMATION_MESSAGE);
+        JPanel actPanel = new JPanel();
     }
 
     @Override

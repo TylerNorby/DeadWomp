@@ -9,6 +9,10 @@ public class Location {
         this.connections = connections;
         this.area = area;
     }
+    public int[] getArea()
+    {
+        return area;
+    }
     public String[] getConnections()
     {
         return connections;

@@ -2,6 +2,8 @@ import java.util.HashMap;
 
 public class Card{
     String name;
+    int[] area;
+    String image;
     int sceneNum;
     int budget;
     String description;
@@ -10,9 +12,10 @@ public class Card{
 
     HashMap<String, Part> roleMap;
 
-    public Card(String name, int sceneNum, int budget, String description, Part[] roles)
+    public Card(String name, String image, int sceneNum, int budget, String description, Part[] roles)
     {
         this.name = name;
+        this.image = image;
         this.sceneNum = sceneNum;
         this.budget = budget;
         this.description = description;
@@ -29,6 +32,10 @@ public class Card{
     public String getName() 
     {
         return name;
+    }
+    public String getImage()
+    {
+        return image;
     }
     public int getSceneNum()
     {

@@ -91,6 +91,7 @@ public class ParseXML {
         //parse Card attributes
         NamedNodeMap attributes = node.getAttributes();
         String name = attributes.getNamedItem("name").getNodeValue();
+        String image = attributes.getNamedItem("img").getNodeValue();
         int budget = Integer.parseInt(attributes.getNamedItem("budget").getNodeValue());
         //parse Scene
         Node scene = ((Element) node).getElementsByTagName("scene").item(0);
@@ -111,7 +112,7 @@ public class ParseXML {
             parts[j] = new Part(partName, area, line, rank, true);
             ++j;
         }
-        return new Card(name, sceneNum, budget, desc, parts);
+        return new Card(name, image, sceneNum, budget, desc, parts);
     }
 
     /**
@@ -241,11 +242,12 @@ public class ParseXML {
 
     private int[] getArea(Node node)
     {
-        NamedNodeMap areaNode = ((Element) node).getElementsByTagName("area").item(0).getAttributes();
+        NodeList areas = ((Element) node).getElementsByTagName("area");
+        NamedNodeMap areaNode = areas.item(0).getAttributes();
         int[] area = new int[4];
         area[0] = Integer.valueOf(areaNode.getNamedItem("x").getNodeValue());
         area[1] = Integer.valueOf(areaNode.getNamedItem("y").getNodeValue());
-        area[2] = Integer.valueOf(areaNode.getNamedItem("h").getNodeValue());
+        area[2] = Integer.valueOf(areaNode.getNamedItem("w").getNodeValue());
         area[3] = Integer.valueOf(areaNode.getNamedItem("h").getNodeValue());
         return area;
     }
