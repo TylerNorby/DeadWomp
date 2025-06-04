@@ -22,7 +22,7 @@ class GameManager {
     public GameManager() {
         gameBoard = new GameBoard();
         validation = new ValidationManager(gameBoard);
-        view = new TextView(); 
+        view = new GraphicView(gameBoard); 
         bank = new Bank(view);
 
         int playerCount = view.inputPlayerCount();

@@ -1,6 +1,8 @@
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
@@ -21,6 +23,7 @@ public class GraphicView extends JFrame implements iView{
     private JLayeredPane board;
     private Panel actionPanel;
     private Panel gameState;
+    private Panel rightPanel;
     String currentAction; //current button input
     Thread inputThread;
 
@@ -63,11 +66,11 @@ public class GraphicView extends JFrame implements iView{
         board.add(boardIcon, 0);
         board.setLayout(new FlowLayout());
 
-        Panel rightPanel = new Panel(new GridLayout(2, 1));
+        rightPanel = new Panel(new GridLayout(2, 1));
         gameState = new Panel();
 
         rightPanel.add(gameState);
-        actionPanel = new Panel(new GridLayout(5, 2)); //actions added at each turn depending on available action
+        actionPanel = new Panel(new GridLayout(0, 3)); //actions added at each turn depending on available action
 
         Action[] actions = Action.class.getEnumConstants();
         for (Action action: actions)
@@ -80,6 +83,8 @@ public class GraphicView extends JFrame implements iView{
                     name = "Take Role";
                 }
                 JButton button = new JButton(name);
+                button.setPreferredSize(new Dimension(150,125));
+                button.setFont(new Font("Times New Roman", Font.PLAIN, 20));
                 button.addActionListener(listener);
                 actionPanel.add(button);
             }
@@ -170,7 +175,10 @@ public class GraphicView extends JFrame implements iView{
                 }
             }
         }
-        actionPanel.setVisible(true);
+        if (rightPanel.getComponents().length != 2)
+        {
+            rightPanel.add(actionPanel);
+        }
 
         synchronized (this) //wait until button is pressed
         {
@@ -180,15 +188,56 @@ public class GraphicView extends JFrame implements iView{
                 e.printStackTrace();
             }
         }
+        if (currentAction == "Take Role")
+        {
+            currentAction = "TakeRole";
+        }
         return Action.valueOf(currentAction);
     }
 
-    // Implemntation not complete, review validLocations array
     public String inputLocation(String[] validLocations) {
-        actionPanel.setVisible(false);
-        String input = (String) JOptionPane.showInputDialog(this, "Choose a location:", "Location Dropdown",
-        JOptionPane.QUESTION_MESSAGE, null, validLocations, validLocations[0]);
-        return input; // null if cancelled
+        rightPanel.remove(actionPanel);
+        Panel locationPanel = new Panel(new GridLayout(0, 3));
+        Listener listener = new Listener(this);
+
+        for (String string : validLocations)
+        {
+            String name = string.substring(0, 1).toUpperCase() + string.substring(1, string.length());
+            JButton button = new JButton(name);
+            button.setPreferredSize(new Dimension(150, 100));
+            button.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+            button.addActionListener(listener);
+            locationPanel.add(button);
+        }
+        JButton button = new JButton("Cancel");
+        button.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+        button.addActionListener(listener);
+        locationPanel.add(button);
+        rightPanel.add(locationPanel);
+        pack();
+
+        synchronized(this)
+        {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        rightPanel.remove(locationPanel);
+
+        if (currentAction.equals("Cancel"))
+        {
+            return null;
+        }
+        else
+        {
+            if (currentAction.equals("Trailer") || currentAction.equals("Office"))
+            {
+                currentAction = currentAction.substring(0, 1).toLowerCase() + currentAction.substring(1, currentAction.length());
+            }
+            return currentAction; 
+        }
     }
 
     public void displayRoles(List<Part> availableRoles, List<Part> unavailableRoles) {

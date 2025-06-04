@@ -104,6 +104,10 @@ public class GameBoard {
      */
     public void flip(String location)
     {
-        ((MovieSet) locationMap.get(location)).getCard().flip();
+        Location loc = locationMap.get(location);
+        if (loc instanceof MovieSet)
+        {
+            ((MovieSet) locationMap.get(location)).getCard().flip();
+        }
     }
 }
