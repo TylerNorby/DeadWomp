@@ -4,26 +4,36 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 
 public class GraphicView extends JFrame implements iView{
     private GameBoard gameBoard;
     private JFrame mainFrame;
     private JLayeredPane board;
-    private Panel actionPanel;
-    private Panel gameState;
-    private Panel rightPanel;
+    private JPanel actionPanel;
+    private JPanel gameState;
+    private JPanel leftPanel;
+    private JPanel rightPanel;
+    private ImageIcon[][] playerIcons;
     String currentAction; //current button input
     Thread inputThread;
 
@@ -53,26 +63,48 @@ public class GraphicView extends JFrame implements iView{
         this.notify();
     }
 
-    public GraphicView(GameBoard gameBoard) {
+    private void generatePlayerIcons()
+    {
+        playerIcons = new ImageIcon[8][6];
+        String[] colors = new String[] {"b", "c", "g", "y", "o", "r", "v", "p"};
+        for (int i = 0; i < 8; ++i)
+        {
+            for (int j = 0; j < 6; ++j)
+            {
+                playerIcons[i][j] = new ImageIcon("Dice/" + colors[i] + (j+1) + ".png");
+            }
+        }
+    }
+
+    public GraphicView(){
         super("Deadwood");
-        this.gameBoard = gameBoard;
         Listener listener = new Listener(this);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        board = new JLayeredPane();
+        board = new JLayeredPane(); //board components 
         add(board);
         JLabel boardIcon = new JLabel(new ImageIcon("board.jpg"));
-        boardIcon.setSize(1600,900);
+        boardIcon.setSize(1200,900);
         board.add(boardIcon, 0);
         board.setLayout(new FlowLayout());
 
-        rightPanel = new Panel(new GridLayout(2, 1));
-        gameState = new Panel();
+        leftPanel = new JPanel(new GridLayout(8, 1)); //player panel
+        TitledBorder playerTitle = BorderFactory.createTitledBorder("Players");
+        playerTitle.setTitleJustification(TitledBorder.CENTER);
+        playerTitle.setTitleFont(new Font("Times New Roman", Font.PLAIN, 15));
+        leftPanel.setBorder(playerTitle);
 
+        rightPanel = new JPanel(new GridLayout(2, 1)); //right panel
+        gameState = new JPanel();
         rightPanel.add(gameState);
-        actionPanel = new Panel(new GridLayout(0, 3)); //actions added at each turn depending on available action
 
+        actionPanel = new JPanel(new GridLayout(0, 1)); //action panel
+        TitledBorder actionTitle = BorderFactory.createTitledBorder("Actions");
+        actionTitle.setTitleJustification(TitledBorder.CENTER);
+        actionTitle.setTitleFont(new Font("Times New Roman", Font.PLAIN, 15));
+        actionPanel.setBorder(actionTitle);
         Action[] actions = Action.class.getEnumConstants();
+
         for (Action action: actions)
         {
             if (action != action.View)
@@ -83,7 +115,6 @@ public class GraphicView extends JFrame implements iView{
                     name = "Take Role";
                 }
                 JButton button = new JButton(name);
-                button.setPreferredSize(new Dimension(150,125));
                 button.setFont(new Font("Times New Roman", Font.PLAIN, 20));
                 button.addActionListener(listener);
                 actionPanel.add(button);
@@ -91,15 +122,17 @@ public class GraphicView extends JFrame implements iView{
         }
         rightPanel.add(actionPanel);
 
+        generatePlayerIcons();
+        
         setLayout(new BorderLayout());
         getContentPane().add(board, BorderLayout.CENTER);
         getContentPane().add(rightPanel, BorderLayout.EAST);
+        leftPanel.setPreferredSize(new Dimension(200,900));
+        rightPanel.setPreferredSize(new Dimension(200,900));
+        getContentPane().add(leftPanel, BorderLayout.WEST);
         setSize(1920, 1080);
         pack();
         setVisible(true);
-    }
-
-    public void displayBoard() {
     }
 
     public int inputPlayerCount() {
@@ -175,10 +208,11 @@ public class GraphicView extends JFrame implements iView{
                 }
             }
         }
-        if (rightPanel.getComponents().length != 2)
-        {
-            rightPanel.add(actionPanel);
-        }
+        rightPanel.remove(1); //swap out bottom panel
+        rightPanel.add(actionPanel);
+        rightPanel.validate();
+        rightPanel.repaint();
+        pack();
 
         synchronized (this) //wait until button is pressed
         {
@@ -196,18 +230,18 @@ public class GraphicView extends JFrame implements iView{
     }
 
     public String inputLocation(String[] validLocations) {
-        if (rightPanel.getComponents().length == 2)
-        {
-            rightPanel.remove(1);
-        }
-        Panel locationPanel = new Panel(new GridLayout(0, 3));
+        JPanel locationPanel = new JPanel(new GridLayout(0, 1));
+        TitledBorder locationBorder = BorderFactory.createTitledBorder("Available Locations");
+        locationBorder.setTitleJustification(TitledBorder.CENTER);
+        locationBorder.setTitleFont(new Font("Times New Roman", Font.PLAIN, 15));
+        locationPanel.setBorder(locationBorder);
+
         Listener listener = new Listener(this);
 
         for (String string : validLocations)
         {
             String name = string.substring(0, 1).toUpperCase() + string.substring(1, string.length());
             JButton button = new JButton(name);
-            button.setPreferredSize(new Dimension(150, 100));
             button.setFont(new Font("Times New Roman", Font.PLAIN, 20));
             button.addActionListener(listener);
             locationPanel.add(button);
@@ -216,7 +250,10 @@ public class GraphicView extends JFrame implements iView{
         button.setFont(new Font("Times New Roman", Font.PLAIN, 20));
         button.addActionListener(listener);
         locationPanel.add(button);
+        rightPanel.remove(1);
         rightPanel.add(locationPanel);
+        rightPanel.validate();
+        rightPanel.repaint();
         pack();
 
         synchronized(this)
@@ -227,7 +264,6 @@ public class GraphicView extends JFrame implements iView{
                 e.printStackTrace();
             }
         }
-        rightPanel.remove(locationPanel);
 
         if (currentAction.equals("Cancel"))
         {
@@ -247,27 +283,30 @@ public class GraphicView extends JFrame implements iView{
     }
 
     public String inputRoleChoice(List<Part> availableRoles) {
-        if (rightPanel.getComponents().length == 2)
-        {
-            rightPanel.remove(1);
-        }
-        Panel rolePanel = new Panel(new GridLayout(0, 1));
+        JPanel rolePanel = new JPanel(new GridLayout(0, 1));
+        TitledBorder border = BorderFactory.createTitledBorder("Available Roles");
+        border.setTitleJustification(TitledBorder.CENTER);
+        border.setTitleFont(new Font("Times New Roman", Font.PLAIN, 15));
+        rolePanel.setBorder(border);
         Listener listener = new Listener(this);
 
         for (Part part: availableRoles)
         {
             String name = part.getName();
             JButton button = new JButton(name);
-            button.setPreferredSize(new Dimension(450, 50));
-            button.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+            button.setPreferredSize(new Dimension(50, 50));
+            button.setFont(new Font("Times New Roman", Font.PLAIN, 16));
             button.addActionListener(listener);
             rolePanel.add(button);
         }
         JButton button = new JButton("Cancel");
-        button.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+        button.setFont(new Font("Times New Roman", Font.PLAIN, 16));
         button.addActionListener(listener);
         rolePanel.add(button);
+        rightPanel.remove(actionPanel); //swap out bottom panel
         rightPanel.add(rolePanel);
+        rightPanel.validate();
+        rightPanel.repaint();
         pack();
 
         synchronized(this)
@@ -278,7 +317,6 @@ public class GraphicView extends JFrame implements iView{
                 e.printStackTrace();
             }
         }
-        rightPanel.remove(rolePanel);
         if (currentAction == "Cancel")
         {
             return "q";
@@ -290,6 +328,35 @@ public class GraphicView extends JFrame implements iView{
     }
 
     public void displayBoard(int day, int totalDays, GameBoard gameBoard, Player activePlayer, Player[] players) {
+        leftPanel.removeAll();
+        for (int i = 0; i < players.length; ++i)
+        {
+            JPanel player = new JPanel(new GridLayout(4, 1));
+            ImageIcon playerIcon = playerIcons[i][players[i].getRank()-1];
+            Image newimg = playerIcon.getImage().getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH); //resize player icon to fit in left panel
+            playerIcon = new ImageIcon(newimg);
+            JLabel name = new JLabel(players[i].getName() + " (" + (players[i].getRank()) + ") ", playerIcon, JLabel.LEFT);
+
+            name.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+            name.setPreferredSize(new Dimension(100,15));
+            player.add(name);
+            JLabel dollars = new JLabel(players[i].getMoney() + " Dollars");
+            dollars.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+            //dollars.setBorder(new EmptyBorder(0, 10, 0, 25));
+            player.add(dollars);
+            JLabel credits = new JLabel(players[i].getCredits() + " Credits");
+            credits.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+            player.add(credits);
+            JLabel chips = new JLabel(players[i].getChips() + " Chips");
+            chips.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+            player.add(chips);
+            //credits.setBorder(new EmptyBorder(0, 10, 0, 25));
+            leftPanel.add(player);
+        }
+
+        leftPanel.validate();
+        leftPanel.repaint();
+        pack();
         //update game state display, update board, update player display
     }
 
@@ -299,7 +366,7 @@ public class GraphicView extends JFrame implements iView{
 
     //method is complete
     @Override
-    public void displayAct(boolean success, int money, int credits) {
+    public void displayAct(boolean success, int roll, int money, int credits) {
         StringBuilder message = new StringBuilder();
         message.append("Acting:\n");
         if (success) {

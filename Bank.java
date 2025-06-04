@@ -74,7 +74,7 @@ public class Bank {
      * @param success
      * @param onCard
      */
-    public void turnPayout(Player player, boolean success, boolean onCard) {
+    public void turnPayout(Player player, int roll, boolean success, boolean onCard) {
         int credits = 0;
         int money = 0;
         if (success)
@@ -96,7 +96,7 @@ public class Bank {
                 money = 1; 
             }
         }
-        view.displayAct(success, money, credits);
+        view.displayAct(success, roll, money, credits);
         player.addCredits(credits);
         player.addMoney(money);
     }

@@ -22,14 +22,13 @@ class GameManager {
     public GameManager() {
         gameBoard = new GameBoard();
         validation = new ValidationManager(gameBoard);
-        view = new GraphicView(gameBoard); 
+
+        view = new GraphicView(); 
         bank = new Bank(view);
 
         int playerCount = view.inputPlayerCount();
-
         players = new Player[playerCount];
         String[] playerNames = view.inputNames(playerCount);
-
         //set up according to amount of players (4 as default)
         int startRank = 1;
         int startCredits = 0;
@@ -168,7 +167,8 @@ class GameManager {
             case Act:
                 currentMovieSet = (MovieSet) gameBoard.getLocation(player.getLocation());
                 Part playerRole = currentMovieSet.getRole(player.getRole());
-                boolean success = validation.validateAct(player.getLocation(), player.rollDice() + player.getChips());
+                int roll = player.rollDice();
+                boolean success = validation.validateAct(player.getLocation(), roll + player.getChips());
                 boolean onCard = playerRole.onCard();
 
                 if (success)
@@ -180,7 +180,7 @@ class GameManager {
                         sceneWrap(currentMovieSet);
                     }
                 }
-                bank.turnPayout(player, success, onCard);
+                bank.turnPayout(player, roll, success, onCard);
                 break;
 
             case Rehearse:

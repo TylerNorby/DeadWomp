@@ -329,7 +329,7 @@ public class TextView implements iView {
     /**
      * Display acting outcome
      */
-    public void displayAct(boolean success, int money, int credits) {
+    public void displayAct(boolean success, int roll, int money, int credits) {
         System.out.println("\nActing: ");
         if (success)
         {
