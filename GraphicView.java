@@ -34,6 +34,7 @@ public class GraphicView extends JFrame implements iView{
     private JPanel leftPanel;
     private JPanel rightPanel;
     private ImageIcon[][] playerIcons;
+    private ImageIcon[] dice;
     String currentAction; //current button input
     Thread inputThread;
 
@@ -76,6 +77,15 @@ public class GraphicView extends JFrame implements iView{
         }
     }
 
+    private void generateDice()
+    {
+        dice = new ImageIcon[6];
+        for (int i = 0; i < 6; ++i)
+        {
+            dice[i] = new ImageIcon("Dice/w" + i + ".png");
+        }
+    }
+    
     public GraphicView(){
         super("Deadwood");
         Listener listener = new Listener(this);
@@ -123,6 +133,7 @@ public class GraphicView extends JFrame implements iView{
         rightPanel.add(actionPanel);
 
         generatePlayerIcons();
+        generateDice();
         
         setLayout(new BorderLayout());
         getContentPane().add(board, BorderLayout.CENTER);
@@ -331,27 +342,42 @@ public class GraphicView extends JFrame implements iView{
         leftPanel.removeAll();
         for (int i = 0; i < players.length; ++i)
         {
+            final int FONT_SIZE = 15;
+            JPanel playerPanel = new JPanel(new BorderLayout());
             JPanel player = new JPanel(new GridLayout(4, 1));
-            ImageIcon playerIcon = playerIcons[i][players[i].getRank()-1];
-            Image newimg = playerIcon.getImage().getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH); //resize player icon to fit in left panel
-            playerIcon = new ImageIcon(newimg);
-            JLabel name = new JLabel(players[i].getName() + " (" + (players[i].getRank()) + ") ", playerIcon, JLabel.LEFT);
+            TitledBorder border = BorderFactory.createTitledBorder(players[i].getName());
+            border.setTitleJustification(TitledBorder.CENTER);
+            border.setTitleFont(new Font("Times New Roman", Font.PLAIN, 17));
+            playerPanel.setBorder(border);
 
-            name.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-            name.setPreferredSize(new Dimension(100,15));
-            player.add(name);
+            String roleText = players[i].getRole();
+            if (roleText == null)
+            {
+                roleText = "No Role.";
+            }
+            JLabel role = new JLabel(roleText);
+            role.setFont(new Font("Times New Roman", Font.PLAIN, FONT_SIZE));
+            role.setPreferredSize(new Dimension(100,15));
+            player.add(role);
+
             JLabel dollars = new JLabel(players[i].getMoney() + " Dollars");
-            dollars.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-            //dollars.setBorder(new EmptyBorder(0, 10, 0, 25));
+            dollars.setFont(new Font("Times New Roman", Font.PLAIN, FONT_SIZE));
             player.add(dollars);
+
             JLabel credits = new JLabel(players[i].getCredits() + " Credits");
-            credits.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+            credits.setFont(new Font("Times New Roman", Font.PLAIN, FONT_SIZE));
             player.add(credits);
+
             JLabel chips = new JLabel(players[i].getChips() + " Chips");
-            chips.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+            chips.setFont(new Font("Times New Roman", Font.PLAIN, FONT_SIZE));
             player.add(chips);
+
             //credits.setBorder(new EmptyBorder(0, 10, 0, 25));
-            leftPanel.add(player);
+            JLabel playerIcon = new JLabel(playerIcons[i][players[i].getRank()-1]);
+            playerIcon.setPreferredSize(new Dimension(60, 45));
+            playerPanel.add(playerIcon, BorderLayout.WEST);
+            playerPanel.add(player, BorderLayout.CENTER);
+            leftPanel.add(playerPanel);
         }
 
         leftPanel.validate();
