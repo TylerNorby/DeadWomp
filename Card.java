@@ -6,6 +6,7 @@ public class Card{
     int budget;
     String description;
     Part[] roles;
+    boolean flipped;
 
     HashMap<String, Part> roleMap;
 
@@ -16,6 +17,7 @@ public class Card{
         this.budget = budget;
         this.description = description;
         this.roles = roles;
+        flipped = false;
         roleMap = new HashMap<String, Part>();
 
         for (Part role: roles)
@@ -46,5 +48,15 @@ public class Card{
     }
     public Part getRole(String role){
         return roleMap.get(role);
+    }
+
+    public boolean isFlipped()
+    {
+        return flipped;
+    }
+
+    public void flip()
+    {
+        flipped = true;
     }
 }

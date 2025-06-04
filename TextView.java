@@ -97,6 +97,10 @@ public class TextView implements iView {
                     lineLen += line.length();
                     System.out.print(line);
                 }
+                else if (!movieSet.getCard().isFlipped())
+                {
+                    System.out.print(" (Scene hidden)");
+                }
                 else
                 {
                     String line = " ($" + movieSet.getCard().getBudget() + ",000,000) (" + movieSet.getShotCounter() + "/" + movieSet.getShots() + ")";
@@ -104,6 +108,8 @@ public class TextView implements iView {
                     System.out.print(line);
                 }
             }
+
+
             System.out.print(": ");
             for (int i = lineLen; i < indent; ++i)
             {
@@ -259,6 +265,10 @@ public class TextView implements iView {
             if (card == null)
             {
                 System.out.println("    (Scene Finish)");
+            }
+            else if (!card.isFlipped())
+            {
+                System.out.println("    (Scene hidden)");
             }
             else
             {

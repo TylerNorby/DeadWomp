@@ -98,4 +98,12 @@ public class GameBoard {
         }
     }
 
+    /**
+     * Flip scene card at location
+     * @param location
+     */
+    public void flip(String location)
+    {
+        ((MovieSet) locationMap.get(location)).getCard().flip();
+    }
 }

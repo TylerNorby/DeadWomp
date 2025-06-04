@@ -1,33 +1,27 @@
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.Label;
-import java.awt.LayoutManager;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Flow;
-import java.util.function.Function;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 public class GraphicView extends JFrame implements iView{
     private GameBoard gameBoard;
     private JFrame mainFrame;
     private JLayeredPane board;
     private Panel actionPanel;
-    Action currentAction;
+    private Panel gameState;
+    String currentAction; //current button input
     Thread inputThread;
 
     /**
@@ -38,14 +32,15 @@ public class GraphicView extends JFrame implements iView{
         private GraphicView parent;
         public void actionPerformed(ActionEvent e)
         {
-            currentAction = Action.valueOf(((JButton) e.getSource()).getText());
+            currentAction = ((JButton) e.getSource()).getText();
             parent.actionPerformed();
         }
-        Listener(GraphicView parent)
+        Listener (GraphicView parent)
         {
             this.parent = parent;
         }
     }
+
 
     /**
      * Unpause obj thread when button input received.
@@ -67,6 +62,11 @@ public class GraphicView extends JFrame implements iView{
         boardIcon.setSize(1600,900);
         board.add(boardIcon, 0);
         board.setLayout(new FlowLayout());
+
+        Panel rightPanel = new Panel(new GridLayout(2, 1));
+        gameState = new Panel();
+
+        rightPanel.add(gameState);
         actionPanel = new Panel(new GridLayout(5, 2)); //actions added at each turn depending on available action
 
         Action[] actions = Action.class.getEnumConstants();
@@ -74,16 +74,21 @@ public class GraphicView extends JFrame implements iView{
         {
             if (action != action.View)
             {
-                JButton button = new JButton(action.toString());
+                String name = action.toString();
+                if (name == "TakeRole")
+                {
+                    name = "Take Role";
+                }
+                JButton button = new JButton(name);
                 button.addActionListener(listener);
                 actionPanel.add(button);
             }
         }
-        
+        rightPanel.add(actionPanel);
 
         setLayout(new BorderLayout());
         getContentPane().add(board, BorderLayout.CENTER);
-        getContentPane().add(actionPanel, BorderLayout.EAST);
+        getContentPane().add(rightPanel, BorderLayout.EAST);
         setSize(1920, 1080);
         pack();
         setVisible(true);
@@ -147,16 +152,25 @@ public class GraphicView extends JFrame implements iView{
         Component[] components = actionPanel.getComponents();
         for (Component component : components)
         {
-            JButton button = (JButton) component;
-            if (validActions.contains(Action.valueOf(button.getText())))
+            if (component instanceof JButton)
             {
-                button.setEnabled(true);
-            }
-            else
-            {
-                button.setEnabled(false);
+                JButton button = (JButton) component;
+                String name = button.getText();
+                if (name == "Take Role")
+                {
+                    name = "TakeRole";
+                }
+                if (validActions.contains(Action.valueOf(name)))
+                {
+                    button.setEnabled(true);
+                }
+                else
+                {
+                    button.setEnabled(false);
+                }
             }
         }
+        actionPanel.setVisible(true);
 
         synchronized (this) //wait until button is pressed
         {
@@ -166,13 +180,14 @@ public class GraphicView extends JFrame implements iView{
                 e.printStackTrace();
             }
         }
-        return currentAction;
+        return Action.valueOf(currentAction);
     }
 
     // Implemntation not complete, review validLocations array
     public String inputLocation(String[] validLocations) {
-        String input = (String) JOptionPane.showInputDialog(mainFrame, "Choose a location:", "Location Dropdown",
-                JOptionPane.QUESTION_MESSAGE, null, validLocations, validLocations[0]);
+        actionPanel.setVisible(false);
+        String input = (String) JOptionPane.showInputDialog(this, "Choose a location:", "Location Dropdown",
+        JOptionPane.QUESTION_MESSAGE, null, validLocations, validLocations[0]);
         return input; // null if cancelled
     }
 

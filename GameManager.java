@@ -22,7 +22,7 @@ class GameManager {
     public GameManager() {
         gameBoard = new GameBoard();
         validation = new ValidationManager(gameBoard);
-        view = new GraphicView(gameBoard); 
+        view = new TextView(); 
         bank = new Bank(view);
 
         int playerCount = view.inputPlayerCount();
@@ -157,6 +157,7 @@ class GameManager {
                     takeTurn(player, possibleActions);
                 } else {
                     player.setLocation(destination);
+                    gameBoard.flip(destination);
                     view.displayLocation(gameBoard, destination);
                 }
                 possibleActions = validation.getPossibleActions(player);
