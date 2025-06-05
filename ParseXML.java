@@ -133,8 +133,13 @@ public class ParseXML {
         {
             neighbors[i] = neighborList.item(i).getAttributes().getNamedItem("name").getNodeValue();
         }
-        NodeList takes = node.getElementsByTagName("takes").item(0).getChildNodes();
-        int shots = takes.getLength();
+        NodeList takes = node.getElementsByTagName("take");
+        int[][] shots = new int[takes.getLength()][4];
+        for (int i = takes.getLength()-1; i >= 0; --i)
+        {
+            int[] area = getArea(takes.item(i));
+            shots[i] = area;
+        }
         //parse off-card roles
         NodeList roleList = node.getElementsByTagName("part");
         Part[] roles = new Part[roleList.getLength()];
@@ -153,7 +158,7 @@ public class ParseXML {
             ++j;
         }
         int[] area = getArea(node);
-        return new MovieSet(name, neighbors, area, shots, roles);
+        return new MovieSet(name, shots, neighbors, area, roles);
     }
 
     /**

@@ -107,7 +107,10 @@ public class GameBoard {
         Location loc = locationMap.get(location);
         if (loc instanceof MovieSet)
         {
-            ((MovieSet) locationMap.get(location)).getCard().flip();
+            if (((MovieSet) loc).getCard() != null)
+            {
+                ((MovieSet) locationMap.get(location)).getCard().flip();
+            }
         }
     }
 }

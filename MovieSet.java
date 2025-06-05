@@ -14,11 +14,11 @@ public class MovieSet extends Location {
     Part[] extras;
     HashMap<String, Part> extraMap;
     Card card;
-    int shots;
     int shotCounter;
     int cardNum;
+    int[][] shots;
 
-    public MovieSet(String name, String[] connections, int[] area, int shots, Part[] extras) {
+    public MovieSet(String name, int[][] shots, String[] connections, int[] area, Part[] extras) {
         super(name, area, connections);
         this.shots = shots;
         this.extras = extras;
@@ -87,8 +87,12 @@ public class MovieSet extends Location {
         return role != null;
     }
 
-    public int getShots() {
+    public int[][] getShots()
+    {
         return shots;
+    }
+    public int getTotalShots() {
+        return shots.length;
     }
 
     public int getShotCounter() {
@@ -101,7 +105,7 @@ public class MovieSet extends Location {
 
     public void resetShotCounter()
     {
-        shotCounter = shots;
+        shotCounter = shots.length;
     }
 
     public Part[] getExtras() {

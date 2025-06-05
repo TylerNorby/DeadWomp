@@ -402,6 +402,8 @@ public class GraphicView extends JFrame implements iView{
 
             //credits.setBorder(new EmptyBorder(0, 10, 0, 25));
             JLabel playerLabel = playerLabels[i][players[i].getRank()-1];
+            ImageIcon img = (ImageIcon) playerLabel.getIcon();
+            playerLabel = new JLabel(img);
 
             playerLabel.setPreferredSize(new Dimension(60, 45));
             playerPanel.add(playerLabel, BorderLayout.WEST);
@@ -454,21 +456,33 @@ public class GraphicView extends JFrame implements iView{
                 MovieSet movieSet = (MovieSet) location;
                 Card card = movieSet.getCard();
                 ImageIcon cardIcon;
-                if(card.isFlipped()) 
-                {
-                    cardIcon = cards.get(card.getImage());
-                }
-                else
-                {
-                    cardIcon = cardBack;
-                }
-                JLabel cardLabel = new JLabel(cardIcon);
-                //cardLabel.setBounds(area[0], area[1], 205,115);
-                cardLabel.setSize(205,115);
                 JLayeredPane cardPane = new JLayeredPane();
                 cardPane.setLayout(null);
                 cardPane.setBounds(area[0], area[1], area[2], area[3]);
-                cardPane.add(cardLabel, Integer.valueOf(1));
+
+                if(card != null)
+                {
+                    if(card.isFlipped()) 
+                    {
+                        cardIcon = cards.get(card.getImage());
+                    }
+                    else
+                    {
+                        cardIcon = cardBack;
+                    }
+                    JLabel cardLabel = new JLabel(cardIcon);
+                    //cardLabel.setBounds(area[0], area[1], 205,115);
+                    cardLabel.setSize(205,115);
+                    cardPane.add(cardLabel, Integer.valueOf(1));
+
+                    int[][] shots = movieSet.getShots();
+                    for (int i = 0; i < movieSet.getShotCounter(); ++i)
+                    {
+                        JLabel shotLabel = new JLabel(shot);
+                        shotLabel.setBounds(shots[i][0], shots[i][1], shots[i][2], shots[i][3]);
+                        board.add(shotLabel, Integer.valueOf(3));
+                    }
+                }
 
                 int offset = 0; //calculate player positions for each player in location
                 int playerCount = 0;
@@ -584,8 +598,7 @@ public class GraphicView extends JFrame implements iView{
     @Override
     public void displaySceneWrap(ArrayList<Player> offCardPlayers, ArrayList<Player> onCardPlayers, int[] onCardPayouts,
             int[] offCardPayouts) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'displaySceneWrap'");
+        JPanel wrapPanel = new JPanel();
     }
 
     public int[] inputUpgrade(boolean[][] availableRanks)
