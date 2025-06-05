@@ -497,7 +497,7 @@ public class GraphicView extends JFrame implements iView{
                         area = location.getArea();
                         if (playerCount < 4)
                         {
-                            playerLabel.setBounds(area[0] - 15 + offset, area[1] + 125, 45, 45);
+                            playerLabel.setBounds(area[0] - 15 + offset, area[1] + 115, 45, 45);
                             offset += 50;
                             ++playerCount;
                         }
