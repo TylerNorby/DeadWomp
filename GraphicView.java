@@ -426,7 +426,9 @@ public class GraphicView extends JFrame implements iView{
     }
 
     public void displayBoard(int day, int totalDays, GameBoard gameBoard, Player activePlayer, Player[] players) {
+        setTitle("Deadwood: Day " + day + "/" + totalDays);
         displayPlayers(gameBoard, activePlayer, players);
+        
 
         //update game state display, update board, update player display
         board.removeAll();
@@ -716,8 +718,6 @@ public class GraphicView extends JFrame implements iView{
     }
 
 
-    // This method is complete
-    @Override
     public void displayScores(Player[] players, int[] playerScores) {
         int len = players.length;
         StringBuilder message = new StringBuilder();
@@ -727,6 +727,7 @@ public class GraphicView extends JFrame implements iView{
         }
         message.append("\nPress OK to exit.\n");
         JOptionPane.showMessageDialog(mainFrame, message.toString(), "Final Scores", JOptionPane.INFORMATION_MESSAGE);
+        dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }
 
 }
