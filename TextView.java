@@ -354,7 +354,7 @@ public class TextView implements iView {
     /**
      * Display scene wrap payouts
      */
-    public void displaySceneWrap(ArrayList<Player> onCardPlayers, ArrayList<Player> offCardPlayers, int[] onCardPayouts, int[] offCardPayouts)
+    public void displaySceneWrap(ArrayList<Player> onCardPlayers, ArrayList<Player> offCardPlayers, int[] onCardPayouts, int[] offCardPayouts, int[] rolls)
     {
         System.out.println("\nScene Wrap:");
         System.out.println("\n    Payouts:");

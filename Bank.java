@@ -65,7 +65,7 @@ public class Bank {
             offCardPayouts[i] += extraPlayers.get(i).getRank();
             extraPlayers.get(i).addMoney(extraPlayers.get(i).getRank());
         }
-        view.displaySceneWrap(onCardPlayers, extraPlayers, onCardPayouts, offCardPayouts);
+        view.displaySceneWrap(onCardPlayers, extraPlayers, onCardPayouts, offCardPayouts, diceRolls);
     }
 
     /**

@@ -22,7 +22,6 @@ import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
 public class GraphicView extends JFrame implements iView{
-    private GameBoard gameBoard;
     private JFrame mainFrame;
     private JLayeredPane board;
     private JPanel actionPanel;
@@ -212,7 +211,6 @@ public class GraphicView extends JFrame implements iView{
         return names;
     }
 
-    // This method is complete
     public Action inputAction(ArrayList<Action> validActions) {
         Component[] components = actionPanel.getComponents();
         for (Component component : components)
@@ -595,8 +593,58 @@ public class GraphicView extends JFrame implements iView{
         rightPanel.validate();
     }
 
-    public void displaySceneWrap(ArrayList<Player> offCardPlayers, ArrayList<Player> onCardPlayers, int[] onCardPayouts, int[] offCardPayouts) {
-        JPanel wrapPanel = new JPanel();
+    public void displaySceneWrap(ArrayList<Player> onCardPlayers, ArrayList<Player> offCardPlayers, int[] onCardPayouts, int[] offCardPayouts, int[] rolls) {
+        Font font = new Font("Times New Roman", Font.PLAIN, 15);
+        JPanel wrapPanel = new JPanel(new GridLayout(4, 1));
+        TitledBorder wrapBorder = new TitledBorder("Scene Wrap");
+        wrapBorder.setTitleFont(font);
+        wrapPanel.setBorder(wrapBorder);
+
+        JPanel onCardPanel = new JPanel(new GridLayout(0,1));
+        TitledBorder onCardBorder = new TitledBorder("On Card Payouts:");
+        onCardBorder.setTitleFont(font);
+        onCardPanel.setBorder(onCardBorder);
+        JPanel offCardPanel = new JPanel(new GridLayout(0,1));
+        TitledBorder offCardBorder = new TitledBorder("Off Card Payouts:");
+        offCardBorder.setTitleFont(font);
+        offCardPanel.setBorder(offCardBorder);
+
+        JPanel rollPanel = new JPanel();
+        for (int i = 0; i < rolls.length; ++i)
+        {
+            rollPanel.add(new JLabel(dice[rolls[i]-1]));
+        }
+        for (int i = 0; i < onCardPlayers.size(); ++i)
+        {
+            JLabel playerPanel = new JLabel(onCardPlayers.get(i).getName() + " received " + onCardPayouts[i] + " dollars.");
+            playerPanel.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+            onCardPanel.add(playerPanel);
+        }
+        for (int i = 0; i < offCardPlayers.size(); ++i)
+        {
+            JLabel playerPanel = new JLabel(offCardPlayers.get(i).getName() + " received " + offCardPayouts[i] + " dollars.");
+            playerPanel.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+            offCardPanel.add(playerPanel);
+        }
+        wrapPanel.add(rollPanel);
+        wrapPanel.add(onCardPanel);
+        wrapPanel.add(offCardPanel);
+        JButton cont = new JButton("Continue");
+        cont.setFont(font);
+        cont.addActionListener(new Listener(this));
+        wrapPanel.add(cont);
+        rightPanel.remove(0);
+        rightPanel.add(wrapPanel, 0);
+        rightPanel.validate();
+
+        synchronized(this)
+        {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public int[] inputUpgrade(boolean[][] availableRanks)
