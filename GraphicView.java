@@ -497,7 +497,7 @@ public class GraphicView extends JFrame implements iView{
                         area = part.getArea();
                         if (part.onCard())
                         {
-                            playerLabel.setLocation(area[0] - 10, area[1] - 19);
+                            playerLabel.setLocation(area[0] - 1, area[1] - 1);
                             cardPane.add(playerLabel, Integer.valueOf(3));
                         }
                         else
@@ -595,16 +595,76 @@ public class GraphicView extends JFrame implements iView{
         rightPanel.validate();
     }
 
-    @Override
-    public void displaySceneWrap(ArrayList<Player> offCardPlayers, ArrayList<Player> onCardPlayers, int[] onCardPayouts,
-            int[] offCardPayouts) {
+    public void displaySceneWrap(ArrayList<Player> offCardPlayers, ArrayList<Player> onCardPlayers, int[] onCardPayouts, int[] offCardPayouts) {
         JPanel wrapPanel = new JPanel();
     }
 
     public int[] inputUpgrade(boolean[][] availableRanks)
     {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'inputRank'");
+        JPanel upgradePanel = new JPanel(new GridLayout(6, 1));
+        TitledBorder upgradeBorder = new TitledBorder("Upgrades");
+        upgradeBorder.setTitleFont(new Font("Times New Roman", Font.PLAIN, 15));
+        upgradeBorder.setTitleJustification(TitledBorder.CENTER);
+        upgradePanel.setBorder(upgradeBorder);
+        Font buttonFont = new Font("Times New Roman", Font.PLAIN, 15);
+
+        for (int i = 0; i < availableRanks.length; ++i)
+        {
+            JPanel rankPanel = new JPanel(new GridLayout(1, 2));
+
+            JButton money = new JButton(i+2 + ": Money");
+            money.setFont(buttonFont);
+            money.addActionListener(new Listener(this));
+            JButton credits = new JButton(i+2 + ": Credits");
+            credits.setFont(buttonFont);
+            credits.addActionListener(new Listener(this));
+            rankPanel.add(money);
+            rankPanel.add(credits);
+
+            if (!availableRanks[i][0])
+            {
+                money.setEnabled(false);
+            }
+            if (!availableRanks[i][1])
+            {
+                credits.setEnabled(false);
+            }
+            upgradePanel.add(rankPanel);
+        }
+        JButton cancel = new JButton("Cancel");
+        cancel.setFont(buttonFont);
+        cancel.addActionListener(new Listener(this));
+        upgradePanel.add(cancel);
+        rightPanel.remove(1);
+        rightPanel.add(upgradePanel);
+        rightPanel.validate();
+        rightPanel.repaint();
+        pack();
+
+        synchronized(this)
+        {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (currentAction.equals("Cancel"))
+        {
+            return new int[]{0, 0};
+        }
+        else
+        {
+            if (currentAction.charAt(3) == 'M') 
+            {
+                return new int[]{1, Integer.valueOf(currentAction.charAt(0)) - 48};
+            }
+            else
+            {
+                return new int[]{2, Integer.valueOf(currentAction.charAt(0)) - 48};
+            }
+        }
     }
 
 

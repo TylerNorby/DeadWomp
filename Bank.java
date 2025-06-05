@@ -116,7 +116,7 @@ public class Bank {
         for (int i = 0; i < 5; ++i)
         {
             boolean[] cost = new boolean[] {false, false};
-            if (player.getRank() <= i + 2)
+            if (player.getRank() <= i + 1)
             {
                 if (player.getMoney() >= moneyCost[i])
                 {
