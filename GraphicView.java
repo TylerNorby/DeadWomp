@@ -81,7 +81,7 @@ public class GraphicView extends JFrame implements iView{
         dice = new ImageIcon[6];
         for (int i = 0; i < 6; ++i)
         {
-            dice[i] = new ImageIcon("Dice/w" + i + ".png");
+            dice[i] = new ImageIcon("Dice/w" + (i+1) + ".png");
         }
     }
 
@@ -542,7 +542,43 @@ public class GraphicView extends JFrame implements iView{
 
     //method is complete
     public void displayAct(boolean success, int roll, int money, int credits) {
-        JPanel actPanel = new JPanel();
+        JPanel actPanel = new JPanel(new GridLayout(0, 1));
+        JLabel dice1 = new JLabel(dice[roll-1]);
+        JPanel topPanel = new JPanel();
+        JLabel top = new JLabel();
+        if (success)
+        {
+            top = new JLabel("Success!");
+        }
+        else
+        {
+            top = new JLabel("Failure.");
+        }
+        top.setFont(new Font("Times New Roman", Font.PLAIN, 25));
+        topPanel.add(top);
+        TitledBorder topBorder = new TitledBorder("Acting:");
+        topBorder.setTitleFont(new Font("Times New Roman", Font.PLAIN, 20));
+        topPanel.setBorder(topBorder);
+
+        JPanel bottom = new JPanel(new GridLayout(2,1));
+        TitledBorder bottomBorder = new TitledBorder("Recieved:");
+        bottomBorder.setTitleFont(new Font("Times New Roman", Font.PLAIN, 20));
+        bottom.setBorder(bottomBorder);
+
+        JLabel moneyLabel = new JLabel(money + " dollars.");
+        moneyLabel.setFont(new Font("Times New Roman", Font.PLAIN, 25));
+        JLabel creditsLabel = new JLabel(credits + " credits.");
+        creditsLabel.setFont(new Font("Times New Roman", Font.PLAIN, 25));
+        bottom.add(moneyLabel);
+        bottom.add(creditsLabel);
+        
+        actPanel.add(topPanel);
+        actPanel.add(dice1);
+        actPanel.add(bottom);
+
+        rightPanel.remove(0);
+        rightPanel.add(actPanel, 0);
+        rightPanel.validate();
     }
 
     @Override
