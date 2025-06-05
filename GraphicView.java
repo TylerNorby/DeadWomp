@@ -1,11 +1,9 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -16,14 +14,11 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 public class GraphicView extends JFrame implements iView{
@@ -34,11 +29,11 @@ public class GraphicView extends JFrame implements iView{
     private JPanel gameState;
     private JPanel leftPanel;
     private JPanel rightPanel;
-    private ImageIcon[][] playerIcons;
+    private JLabel[][] playerLabels;
     private ImageIcon[] dice;
-    private HashMap<String, ImageIcon> cards;
     private ImageIcon cardBack;
-    private ImageIcon sceneCounter;
+    private ImageIcon shot;
+    private HashMap<String, ImageIcon> cards;
     String currentAction; //current button input
     Thread inputThread;
 
@@ -68,15 +63,15 @@ public class GraphicView extends JFrame implements iView{
         this.notify();
     }
 
-    private void generatePlayerIcons()
+    private void generatePlayerLabels()
     {
-        playerIcons = new ImageIcon[8][6];
+        playerLabels = new JLabel[8][6];
         String[] colors = new String[] {"b", "c", "g", "y", "o", "r", "v", "p"};
         for (int i = 0; i < 8; ++i)
         {
             for (int j = 0; j < 6; ++j)
             {
-                playerIcons[i][j] = new ImageIcon("Dice/" + colors[i] + (j+1) + ".png");
+                playerLabels[i][j] = new JLabel(new ImageIcon("Dice/" + colors[i] + (j+1) + ".png"));
             }
         }
     }
@@ -93,11 +88,15 @@ public class GraphicView extends JFrame implements iView{
     private void generateCards()
     {
         cards = new HashMap<String, ImageIcon>();
-        for (int i = 1; i < 41; ++i)
+        for (int i = 1; i < 10; ++i)
+        {
+            cards.put("0" + i + ".png", new ImageIcon("Cards/0" + i + ".png"));
+        }
+        for (int i = 10; i < 41; ++i)
         {
             cards.put(i + ".png", new ImageIcon("Cards/" + i + ".png"));
         }
-        sceneCounter = new ImageIcon("shot.png");
+        shot = new ImageIcon("shot.png");
         cardBack = new ImageIcon("cardBack.png");
     }
     
@@ -111,7 +110,7 @@ public class GraphicView extends JFrame implements iView{
         board.setPreferredSize(new Dimension(1200,900));
         JLabel boardIcon = new JLabel(new ImageIcon("board.jpg"));
         boardIcon.setSize(1200, 900);
-        board.add(boardIcon, 0);
+        board.add(boardIcon, 10);
         add(board);
 
         leftPanel = new JPanel(new GridLayout(8, 1)); //player panel
@@ -148,7 +147,7 @@ public class GraphicView extends JFrame implements iView{
         }
         rightPanel.add(actionPanel);
 
-        generatePlayerIcons();
+        generatePlayerLabels();
         generateDice();
         generateCards();
         
@@ -355,20 +354,31 @@ public class GraphicView extends JFrame implements iView{
         }
     }
 
-    private void displayPlayers(Player activePlayer, Player[] players)
+    private void displayPlayers(GameBoard gameBoard, Player activePlayer, Player[] players)
     {
         leftPanel.removeAll();
         for (int i = 0; i < players.length; ++i)
         {
             final int FONT_SIZE = 15;
             JPanel playerPanel = new JPanel(new BorderLayout());
-            JPanel player = new JPanel(new GridLayout(4, 1));
+            JPanel playerInfo = new JPanel(new GridLayout(4, 1));
             TitledBorder border = BorderFactory.createTitledBorder(players[i].getName());
             border.setTitleJustification(TitledBorder.CENTER);
             border.setTitleFont(new Font("Times New Roman", Font.PLAIN, 17));
             playerPanel.setBorder(border);
+            Player player = players[i];
 
-            String roleText = players[i].getRole();
+            if (player == activePlayer)
+            {
+                playerPanel.setBackground(Color.YELLOW);
+                playerInfo.setBackground(Color.YELLOW);
+            }
+            else
+            {
+                playerPanel.setBackground(null);
+            }
+
+            String roleText = player.getRole();
             if (roleText == null)
             {
                 roleText = "No Role";
@@ -376,48 +386,75 @@ public class GraphicView extends JFrame implements iView{
             JLabel role = new JLabel(roleText);
             role.setFont(new Font("Times New Roman", Font.PLAIN, FONT_SIZE));
             role.setPreferredSize(new Dimension(100,15));
-            player.add(role);
+            playerInfo.add(role);
 
             JLabel dollars = new JLabel(players[i].getMoney() + " Dollars");
             dollars.setFont(new Font("Times New Roman", Font.PLAIN, FONT_SIZE));
-            player.add(dollars);
+            playerInfo.add(dollars);
 
             JLabel credits = new JLabel(players[i].getCredits() + " Credits");
             credits.setFont(new Font("Times New Roman", Font.PLAIN, FONT_SIZE));
-            player.add(credits);
+            playerInfo.add(credits);
 
             JLabel chips = new JLabel(players[i].getChips() + " Chips");
             chips.setFont(new Font("Times New Roman", Font.PLAIN, FONT_SIZE));
-            player.add(chips);
+            playerInfo.add(chips);
 
             //credits.setBorder(new EmptyBorder(0, 10, 0, 25));
-            JLabel playerIcon = new JLabel(playerIcons[i][players[i].getRank()-1]);
-            playerIcon.setPreferredSize(new Dimension(60, 45));
-            playerPanel.add(playerIcon, BorderLayout.WEST);
-            playerPanel.add(player, BorderLayout.CENTER);
+            JLabel playerLabel = playerLabels[i][players[i].getRank()-1];
+
+            playerLabel.setPreferredSize(new Dimension(60, 45));
+            playerPanel.add(playerLabel, BorderLayout.WEST);
+            playerPanel.add(playerInfo, BorderLayout.CENTER);
             leftPanel.add(playerPanel);
         }
         leftPanel.validate();
         leftPanel.repaint();
     }
+
+    private class PlayerPair
+    {
+        public Player player;
+        public JLabel label;
+        public PlayerPair(Player player, JLabel label)
+        {
+            this.player = player;
+            this.label = label;
+        }
+        public Player getPlayer(){ return player; }
+        public JLabel getLabel() { return label; }
+    }
+
     public void displayBoard(int day, int totalDays, GameBoard gameBoard, Player activePlayer, Player[] players) {
-        displayPlayers(activePlayer, players);
+        displayPlayers(gameBoard, activePlayer, players);
 
         //update game state display, update board, update player display
+        board.removeAll();
+        JLabel boardIcon = new JLabel(new ImageIcon("board.jpg"));
+        boardIcon.setSize(1200, 900);
+        board.add(boardIcon, Integer.valueOf(0));
+
         Location[] locations = gameBoard.getLocations();
         for (Location location: locations)
         {
-            JPanel locationPanel = new JPanel();
+            
+            ArrayList<PlayerPair> playerList = new ArrayList<PlayerPair>(); //get all players in location and their respective icons
+            for (int i = 0; i < players.length; ++i)
+            {
+                if (gameBoard.getLocation(players[i].getLocation()) == location)
+                {
+
+                    playerList.add(new PlayerPair(players[i], playerLabels[i][players[i].getRank() - 1]));
+                }
+            }
             int[] area = location.getArea();
-            locationPanel.setBounds(area[0], area[1], area[2], area[3]);
 
             if (location instanceof MovieSet)
             {
                 MovieSet movieSet = (MovieSet) location;
                 Card card = movieSet.getCard();
-
                 ImageIcon cardIcon;
-                if(card.isFlipped())
+                if(card.isFlipped()) 
                 {
                     cardIcon = cards.get(card.getImage());
                 }
@@ -426,13 +463,77 @@ public class GraphicView extends JFrame implements iView{
                     cardIcon = cardBack;
                 }
                 JLabel cardLabel = new JLabel(cardIcon);
-                cardLabel.setBounds(area[0], area[1], 205,115);
+                //cardLabel.setBounds(area[0], area[1], 205,115);
                 cardLabel.setSize(205,115);
-                locationPanel.add(cardLabel);
+                JLayeredPane cardPane = new JLayeredPane();
+                cardPane.setLayout(null);
+                cardPane.setBounds(area[0], area[1], area[2], area[3]);
+                cardPane.add(cardLabel, Integer.valueOf(1));
+
+                int offset = 0; //calculate player positions for each player in location
+                int playerCount = 0;
+                for (PlayerPair playerPair: playerList)
+                {
+                    Player player = playerPair.getPlayer();
+                    JLabel playerLabel = playerPair.getLabel();
+
+                    Part part = movieSet.getRole(player.getRole());
+                    if (part != null)
+                    {
+                        area = part.getArea();
+                        if (part.onCard())
+                        {
+                            playerLabel.setLocation(area[0] - 10, area[1] - 19);
+                            cardPane.add(playerLabel, Integer.valueOf(3));
+                        }
+                        else
+                        {
+                            playerLabel.setBounds(area[0] + 1, area[1] + 1, 45, 45);
+                            board.add(playerLabel, Integer.valueOf(3));
+                        }
+                    }
+                    else
+                    {
+                        area = location.getArea();
+                        if (playerCount < 4)
+                        {
+                            playerLabel.setBounds(area[0] - 15 + offset, area[1] + 125, 45, 45);
+                            offset += 50;
+                            ++playerCount;
+                        }
+                        else
+                        {
+                            playerLabel.setBounds(area[0] - 15 + (offset - 200), area[1] - 30, 45, 45);
+                            offset += 50;
+                        }
+                        board.add(playerLabel, Integer.valueOf(3));
+                    }
+                }
+                board.add(cardPane, Integer.valueOf(2));
             }
-            board.add(locationPanel, 2);
+            else
+            {
+                int offset = 0;
+                int playerCount = 0;
+                for (PlayerPair playerPair: playerList)
+                {
+                    JLabel playerLabel = playerPair.getLabel();
+                    area = location.getArea();
+                    if (playerCount < 4)
+                    {
+                        playerLabel.setBounds(area[0] + 15 + offset, area[1], 45, 45);
+                        offset += 50;
+                        ++playerCount;
+                    }
+                    else
+                    {
+                        playerLabel.setBounds(area[0] + 15 + offset - 200, area[1] + 45, 45, 45);
+                        offset += 50;
+                    }
+                    board.add(playerLabel, Integer.valueOf(3));
+                }
+            }
         }
-        pack();
     }
 
     public void displayLocation(GameBoard gameBoard, String locationName) {

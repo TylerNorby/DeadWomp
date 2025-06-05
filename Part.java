@@ -28,6 +28,10 @@ public class Part {
     {
         return name;
     }
+    public int[] getArea()
+    {
+        return area;
+    }
     public String getLine()
     {
         return line;
