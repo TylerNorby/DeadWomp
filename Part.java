@@ -48,6 +48,10 @@ public class Part {
     {
         inUse = true;
     }
+    public void free()
+    {
+        inUse = false;
+    }
     public boolean onCard()
     {
         return onCard;

@@ -106,6 +106,10 @@ public class MovieSet extends Location {
     public void resetShotCounter()
     {
         shotCounter = shots.length;
+        for (Part part: extras)
+        {
+            part.free();
+        }
     }
 
     public Part[] getExtras() {
